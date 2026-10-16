@@ -1,9 +1,29 @@
 
+import { LayoutDashboard, Map, Plus, Bell, User } from 'lucide-react';
 import './App.css'
 import { useState } from 'react'
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
+import SupportMap from "./SupportMap";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  /* replace with the actual data*/
+  const CaseData = [
+  { month: 'May', case: 120 },
+  { month: 'Jun', case: 180 },
+  { month: 'Jul', case: 90 },
+  { month: 'Aug', case: 220 },
+  { month: 'Sep', case: 150 },
+  { month: 'Oct', case: 200 }
+];
    
 
     return (
@@ -16,63 +36,76 @@ export default function App() {
             <span className="logo-text">Suara Kita</span>
           </div>
 
-          <nav className="nav-bar">
-            <button 
-              type="button" 
-              className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
-              onClick={() => setActiveTab('dashboard')}
-            >
-              Dashboard
-            </button>
+{/* navigation bar */}
+<nav className="nav-bar">
 
-            <button 
-              type="button" 
-              className={`nav-button ${activeTab === 'Call Recordings' ? 'active' : ''}`}
-              onClick={() => setActiveTab('Call Recordings')}
-            >
-              Call Recordings
-            </button>
+  <button
+    type="button"
+    className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
+    onClick={() => setActiveTab('dashboard')}
+  >
+    <LayoutDashboard size={22} />
+    <span>Dashboard</span>
+  </button>
 
-            <button 
-              type="button" 
-              className={`nav-button ${activeTab === 'Complaints Management' ? 'active' : ''}`}
-              onClick={() => setActiveTab('Complaints Management')}
-            >
-              Complaints Management
-            </button>
+  <button
+    type="button"
+    className={`nav-button ${activeTab ==='location' ? 'active' : ''}`}
+    onClick={() => setActiveTab('location')}
+  >
+    <Map size={22} />
+    <span>Location</span>
+  </button>
 
-            <button 
-              type="button" 
-              className={`nav-button ${activeTab === 'Potential Duplicates' ? 'active' : ''}`}
-              onClick={() => setActiveTab('Potential Duplicates')}
-            >
-              Potential Duplicates
-            </button>
+  <button
+    type="button"
+    className={`nav-button ${activeTab === 'Report' ? 'active' : ''}`}
+    onClick={() => setActiveTab('Report')}
+  >
+    <Plus size={22} />
+    <span>Report</span>
+  </button>
 
-          </nav>
+   <button
+    type="button"
+    className={`nav-button ${activeTab === 'Alerts' ? 'active' : ''}`}
+    onClick={() => setActiveTab('Alerts')}
+  >
+    <Bell size={22} />
+    <span>Alerts</span>
+  </button>
+
+  <button
+    type="button"
+    className={`nav-button ${activeTab === 'Profile' ? 'active' : ''}`}
+    onClick={() => setActiveTab('Profile')}
+  >
+    <User size={22} />
+    <span>Profile</span>
+  </button>
+
+</nav>
+```
+
         </header>
 
 
-        {activeTab === 'dashboard' && (
-          <div className="card">
-            <div className="type-grid">
-             <h1>Welcome to Cab Bill Splitter</h1>
-            </div>
-            </div>
+    
+        {activeTab === 'location' && (
+  <div className="support-page">
+    <div className="support-heading">
+      <h1>Nearby Support Services</h1>
+      <p>
+        Find hospitals, police stations,
+        and support organisations near you.
+      </p>
+    </div>
 
+    <div className="support-map-container">
+      <SupportMap />
+    </div>
+  </div>
 )}
-
-        {activeTab === 'Call Recordings' && (
-            <div className="card">
-                    <div className="request-header">
-                      <div className="check-circle">✓</div>
-                      <h2 className="request-title text-black">Payment Request Ready</h2>
-                      <p className="field-hint">
-                        Generated for 1 pax · Grab 4 Seater
-                      </p>
-                    </div>
-            </div>
-        )}
         </main>
         </div>
       
