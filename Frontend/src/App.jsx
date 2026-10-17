@@ -2,29 +2,12 @@
 import { LayoutDashboard, Map, Plus, Bell, User } from 'lucide-react';
 import './App.css'
 import { useState } from 'react'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from 'recharts';
+import ReportIncident from "./ReportIncident";
 import SupportMap from "./SupportMap";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
-  /* replace with the actual data*/
-  const CaseData = [
-  { month: 'May', case: 120 },
-  { month: 'Jun', case: 180 },
-  { month: 'Jul', case: 90 },
-  { month: 'Aug', case: 220 },
-  { month: 'Sep', case: 150 },
-  { month: 'Oct', case: 200 }
-];
-   
+
 
     return (
          <div className="page">
@@ -106,6 +89,17 @@ export default function App() {
     </div>
   </div>
 )}
+
+{activeTab === "Report" && <ReportIncident />}
+{/* {activeTab === "Report" && <ReportIncident />}
+{activeTab === 'Report' && (
+          <div className="report-card">
+         
+             <h1>Report Incident</h1>
+            </div>
+             */}
+
+{/* )} */}
         </main>
         </div>
       
