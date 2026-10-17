@@ -1,13 +1,150 @@
 
 import { LayoutDashboard, Map, Plus, Bell, User } from 'lucide-react';
 import './App.css'
+import Dashboard from './Dashboard'
 import { useState } from 'react'
 import ReportIncident from "./ReportIncident";
 import SupportMap from "./SupportMap";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  // location
+  const [latitude, setLatitude] = useState(null)
+  const [longitude, setLongitude] = useState(null)
+  const [userLocation, setUserLocation] = useState('')
+  const [locationError, setLocationError] = useState('')
+  const [incidents, setIncidents] = useState([
+    {
+      id: 1,
+      type: 'Assault',
+      latitude: 3.1668,
+      longitude: 101.7062,
+      time: 'Today, 6:20 PM',
+      location: 'Jalan Tun Razak, Kuala Lumpur',
+      description: 'Physical assault reported in the area.',
+      status: 'Verified'
+    },
+    {
+      id: 2,
+      type: 'Robbery',
+      latitude: 3.1466,
+      longitude: 101.7113,
+      time: 'Today, 4:45 PM',
+      location: 'Bukit Bintang, Kuala Lumpur',
+      description: 'A robbery incident was reported nearby.',
+      status: 'Verified'
+    },
+    {
+    id: 3,
+    type: 'Assault',
+    latitude: 4.3597,
+    longitude: 100.9848,
+    time: 'Today, 6:20 PM',
+    location: 'Bandar Seri Iskandar',
+    description: 'Physical assault reported near the commercial area.',
+    status: 'Verified'
+    },
+    {
+      id: 4,
+      type: 'Robbery',
+      latitude: 4.3665,
+      longitude: 100.9795,
+      time: 'Today, 4:45 PM',
+      location: 'Bandar Universiti, Seri Iskandar',
+      description: 'A robbery incident was reported near the residential area.',
+      status: 'Verified'
+    },
+    {
+      id: 5,
+      type: 'Rape',
+      latitude: 4.3730,
+      longitude: 100.9725,
+      time: 'Today, 3:10 PM',
+      location: 'Near Universiti Teknologi PETRONAS',
+      description: 'Rape activity was reported near the surrounding area.',
+      status: 'Pending'
+    },
+    {
+      id: 6,
+      type: 'Robbery',
+      latitude: 4.3475,
+      longitude: 100.9930,
+      time: 'Yesterday, 10:30 PM',
+      location: 'Seri Iskandar',
+      description: 'A personal belonging was reportedly stolen.',
+      status: 'Verified'
+    },
+    {
+      id: 7,
+      type: 'Rape',
+      latitude: 4.3880,
+      longitude: 100.9630,
+      time: 'Yesterday, 8:15 PM',
+      location: 'Tronoh',
+      description: 'Residents reported Rape behaviour in the area.',
+      status: 'Pending'
+    }
+  ])
 
+  const getCurrentLocation = () => {
+  if (!navigator.geolocation) {
+    setLocationError('Geolocation is not supported on this device.')
+    return
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude
+      const lng = position.coords.longitude
+
+      setLatitude(lat)
+      setLongitude(lng)
+      const placeName = await getPlaceName(lat, lng)
+      setUserLocation(placeName)
+      setLocationError('')
+
+      console.log('Latitude:', lat)
+      console.log('Longitude:', lng)
+      console.log("Place:", placeName)
+    },
+
+    (error) => {
+      console.error(error)
+      setLocationError('Unable to get your location.')
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+    )
+  }
+    const getPlaceName = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+      )
+
+      const data = await response.json()
+      const address = data.address
+
+      const area =
+        address.suburb ||
+        address.neighbourhood ||
+        address.village ||
+        address.town ||
+        address.city ||
+        ''
+
+      const state = address.state || ''
+
+      return `${area}${area && state ? ', ' : ''}${state}`
+    } catch (error) {
+      console.error("Reverse geocoding failed:", error)
+      return "Location unavailable"
+      }
+    }
 
     return (
          <div className="page">
@@ -15,9 +152,10 @@ export default function App() {
         
         <header className="header">
           <div className="logo-row">
-            <span className="logo-icon">↗</span>
-            <span className="logo-text">Suara Kita</span>
+            {/* <span className="logo-icon">↗</span> */}
           </div>
+          <span className="logo-text">Suara Kita</span>
+        </header>
 
 {/* navigation bar */}
 <nav className="nav-bar">
@@ -68,13 +206,22 @@ export default function App() {
   </button>
 
 </nav>
-```
 
-        </header>
+{/* DASHBAORD PAGE */}
+{activeTab === 'dashboard' && (
+  <Dashboard
+    getCurrentLocation={getCurrentLocation}
+    userLocation={userLocation}
+    locationError={locationError}
+    incidents={incidents}
+    latitude={latitude}
+    longitude={longitude}
+  />
+)}
 
 
-    
-        {activeTab === 'location' && (
+{/* LOCATION PAGE */}
+{activeTab === 'location' && (
   <div className="support-page">
     <div className="support-heading">
       <h1>Nearby Support Services</h1>
@@ -85,7 +232,10 @@ export default function App() {
     </div>
 
     <div className="support-map-container">
-      <SupportMap />
+      <SupportMap 
+      latitude={latitude}
+      longitude={longitude}
+      />
     </div>
   </div>
 )}

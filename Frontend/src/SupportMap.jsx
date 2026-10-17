@@ -2,7 +2,8 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  Popup
+  Popup,
+  useMap 
 } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
@@ -20,10 +21,24 @@ const services = [
   }
 ];
 
-export default function SupportMap() {
+function RecenterMap({ latitude, longitude }) {
+  const map = useMap();
+
+  if (latitude && longitude) {
+    map.setView([latitude, longitude], 15);
+  }
+
+  return null;
+}
+
+export default function SupportMap({ latitude, longitude }) {
   return (
     <MapContainer
-      center={[4.385, 100.980]}
+      center={
+        latitude && longitude
+          ? [latitude, longitude]
+          : [4.385, 100.980]
+      }
       zoom={13}
       style={{
         height: "500px",
@@ -36,6 +51,21 @@ export default function SupportMap() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
+      <RecenterMap
+        latitude={latitude}
+        longitude={longitude}
+      />
+      
+      // USER LOCATION
+      {latitude && longitude && (
+        <Marker position={[latitude, longitude]}>
+          <Popup>
+            <strong>Your Location</strong>
+          </Popup>
+        </Marker>
+      )}
+
+      // SUPPORT SERVICES
       {services.map((service, index) => (
         <Marker
           key={index}

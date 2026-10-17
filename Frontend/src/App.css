@@ -5,7 +5,7 @@
 
 .page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f7fb;
   max-width : 390px;
   margin: 0 auto;
   color: #111111;
@@ -35,10 +35,9 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 40px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);  
+  /* justify-content: space-between; */
+  padding: 12px 16px;
+  background: #f5f7fb; 
 }
 
 .logo-row {
@@ -61,8 +60,12 @@
 }
 
 .logo-text {
-  font-size: 14px;
-  font-weight: 600;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 750;
   letter-spacing: -0.2px;
 }
 
@@ -83,7 +86,7 @@
   background: white;
   border-top: 1px solid #e5e7eb;
 
-  z-index: 1000;
+  z-index: 9999;
   box-sizing: border-box;
 }
 
@@ -138,10 +141,12 @@
 /* Dashboard Styles */
 .dash-container {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
   border: 1px;
+  border-radius: 8px;
   padding: 1px;
   background-color: #f5f5f5;
   min-height: 100vh;
