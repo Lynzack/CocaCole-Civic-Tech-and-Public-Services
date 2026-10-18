@@ -7,7 +7,7 @@
   width: 100%;
   min-height: 100vh;
 
-  padding: 10px;
+  padding: 5px 20px 20px 20px;
   background-color: #f5f7fb;
 }
 
@@ -23,14 +23,14 @@
   align-items: center;
   gap: 12px;
   padding: 0px 10px;
-
+  margin-top: 0;
   border-radius: 12px;
   cursor: pointer;
 }
 
 .selected-location-icon {
   flex-shrink: 0;
-  color: #222222;
+  color: #2563eb;
 }
 
 .selected-location-text {

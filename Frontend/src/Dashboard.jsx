@@ -9,9 +9,72 @@ export default function Dashboard({
   incidents,
   latitude,
   longitude,
+  language,
   onIncidentClick
 }) {
     const [selectedFilter, setSelectedFilter] = useState('All')
+
+    //Language translations
+    const text = {
+    BM: {
+        selectedLocation: 'Lokasi dipilih',
+        getLocation: 'Dapatkan lokasi',
+        incidents: 'Insiden',
+        all: 'Semua',
+        assault: 'Serangan',
+        robbery: 'Rompakan',
+        rape: 'Rogol',
+        murder: 'Pembunuhan',
+        sexualHarassment: 'Gangguan Seksual',
+        distanceUnavailable: 'Jarak tidak tersedia',
+        verified: 'Disahkan',
+        pending: 'Menunggu',
+        today: 'Hari ini',
+        yesterday: 'Semalam'
+    },
+
+    ENG: {
+        selectedLocation: 'Selected location',
+        getLocation: 'Get Location',
+        incidents: 'Incidents',
+        all: 'All',
+        assault: 'Assault',
+        robbery: 'Robbery',
+        rape: 'Rape',
+        murder: 'Murder',
+        sexualHarassment: 'Sexual Harassment',
+        distanceUnavailable: 'Distance unavailable',
+        verified: 'Verified',
+        pending: 'Pending',
+        today: 'Today',
+        yesterday: 'Yesterday'
+    }
+    }
+    const t = text[language]
+
+    const translateIncidentType = (type) => {
+    const translations = {
+        Assault: t.assault,
+        Robbery: t.robbery,
+        Rape: t.rape,
+        Murder: t.murder,
+        'Sexual Harassment': t.sexualHarassment
+    }
+    return translations[type] || type
+    }
+
+    const translateStatus = (status) => {
+    if (status === 'Verified') {return t.verified}
+    if (status === 'Pending') {return t.pending}
+    return status
+    }
+
+    const translateTime = (time) => {
+    if (language === 'ENG') {return time}
+    return time
+        .replace('Today', 'Hari ini')
+        .replace('Yesterday', 'Semalam')
+    }
 
     // 1. Calculate distance
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -100,8 +163,8 @@ export default function Dashboard({
             <MapPin size={25} className="selected-location-icon" />
 
             <div className="selected-location-text">
-                <h3>Selected location</h3>
-                <p>{userLocation || 'Get Location'}</p>
+                <h3>{t.selectedLocation}</h3>
+                <p>{userLocation || t.getLocation}</p>
             </div>
 
             </div>
@@ -114,7 +177,7 @@ export default function Dashboard({
 
             {/* // INCIDENTS Header */}
             <div className="dash-header">
-            <h2>Incidents</h2>
+            <h2>{t.incidents}</h2>
             </div>
 
             {/* INCIDENTS FILTER */}
@@ -126,7 +189,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('All')}
             >
-                All
+                {t.all}
             </button>
 
             <button
@@ -135,7 +198,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Assault')}
             >
-                Assault
+                {t.assault}
             </button>
 
             <button
@@ -144,7 +207,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Robbery')}
             >
-                Robbery
+                {t.robbery}
             </button>
 
             <button
@@ -153,7 +216,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Rape')}
             >
-                Rape
+                {t.rape}
             </button>
 
             <button
@@ -162,7 +225,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Murder')}
             >
-                Murder
+                {t.murder}
             </button>
 
             <button
@@ -171,7 +234,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Sexual Harassment')}
             >
-                Sexual Harassment
+                {t.sexualHarassment}
             </button>
 
             </div>
@@ -200,20 +263,20 @@ export default function Dashboard({
                                 </div>
 
                                 <div className="incident-heading-text">
-                                    <h3>{incident.type}</h3>
+                                    <h3>{translateIncidentType(incident.type)}</h3>
                                     <p className="incident-meta">
                                         {Number.isFinite(incident.calculatedDistance)
                                             ? `~ ${incident.calculatedDistance.toFixed(1)} km`
-                                            : 'Distance unavailable'
+                                            : t.distanceUnavailable
                                         }
                                         {' • '}
-                                        {incident.time}
+                                        {translateTime(incident.time)}
                                     </p>
                                 </div>
                             </div>
 
                             <span className="incident-badge">
-                            {incident.status}
+                            {translateStatus(incident.status)}
                             </span>
 
                         </div>

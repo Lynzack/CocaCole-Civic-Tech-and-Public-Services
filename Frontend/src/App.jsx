@@ -1,7 +1,8 @@
 
 import { LayoutDashboard, Map, Plus, Bell, User } from 'lucide-react';
 import './App.css'
-import Dashboard from './Dashboard'
+import Dashboard from './Dashboard';
+import Location from './Location'
 import { useState } from 'react'
 import ReportIncident from "./ReportIncident";
 import SupportMap from "./SupportMap";
@@ -9,6 +10,7 @@ import IncidentDetails from './IncidentDetails'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [language, setLanguage] = useState('BM')
   const [selectedIncident, setSelectedIncident] = useState(null)
   // location
   const [latitude, setLatitude] = useState(null)
@@ -153,11 +155,28 @@ export default function App() {
       <main className="card-container">
         
         <header className="header">
-          <div className="logo-row">
-            {/* <span className="logo-icon">↗</span> */}
-          </div>
-          <span className="logo-text">Suara Kita</span>
-        </header>
+        <span className="logo-text"> MYSafety </span>
+        <div className="language-toggle">
+
+          <button
+            type="button"
+            className={language === 'BM' ? 'active' : ''}
+            onClick={() => setLanguage('BM')}
+          >
+            BM
+          </button>
+
+          <span className="language-divider">|</span>
+
+          <button
+            type="button"
+            className={language === 'ENG' ? 'active' : ''}
+            onClick={() => setLanguage('ENG')}
+          >
+            ENG
+          </button>
+        </div>
+      </header>
 
 {/* navigation bar */}
 <nav className="nav-bar">
@@ -172,7 +191,7 @@ export default function App() {
   onClick={() => setActiveTab('dashboard')}
 >
   <LayoutDashboard size={22} />
-  <span>Dashboard</span>
+  <span>{language === 'BM' ? 'Utama' : 'Dashboard'}</span>
 </button>
 
   <button
@@ -181,7 +200,7 @@ export default function App() {
     onClick={() => setActiveTab('location')}
   >
     <Map size={22} />
-    <span>Location</span>
+    <span>{language === 'BM' ? 'Lokasi' : 'Location'}</span>
   </button>
 
   <button
@@ -190,7 +209,7 @@ export default function App() {
     onClick={() => setActiveTab('Report')}
   >
     <Plus size={22} />
-    <span>Report</span>
+    <span>{language === 'BM' ? 'Laporan' : 'Report'}</span>
   </button>
 
    <button
@@ -199,7 +218,7 @@ export default function App() {
     onClick={() => setActiveTab('Alerts')}
   >
     <Bell size={22} />
-    <span>Alerts</span>
+    <span>{language === 'BM' ? 'Amaran' : 'Alerts'}</span>
   </button>
 
   <button
@@ -208,7 +227,7 @@ export default function App() {
     onClick={() => setActiveTab('Profile')}
   >
     <User size={22} />
-    <span>Profile</span>
+    <span>{language === 'BM' ? 'Profil' : 'Profile'}</span>
   </button>
 
 </nav>
@@ -222,6 +241,7 @@ export default function App() {
     incidents={incidents}
     latitude={latitude}
     longitude={longitude}
+    language={language}
     onIncidentClick={(incident) => {
       setSelectedIncident(incident)
       setActiveTab('IncidentDetails')
@@ -237,38 +257,25 @@ export default function App() {
 )}
 
 
-{/* LOCATION PAGE */}
-{activeTab === 'location' && (
-  <div className="support-page">
-    <div className="support-heading">
-      <h1>Nearby Support Services</h1>
-      <p>
-        Find hospitals, police stations,
-        and support organisations near you.
-      </p>
-    </div>
-
-    <div className="support-map-container">
-      <SupportMap 
+  {/* LOCATION PAGE */}
+  {activeTab === 'location' && (
+    <Location
       latitude={latitude}
       longitude={longitude}
-      />
-    </div>
-  </div>
-)}
+      getCurrentLocation={getCurrentLocation}
+      incidents={incidents}
+      language={language}
+    />
+  )}
 
-{activeTab === "Report" && <ReportIncident />}
-{/* {activeTab === "Report" && <ReportIncident />}
-{activeTab === 'Report' && (
-          <div className="report-card">
-         
-             <h1>Report Incident</h1>
-            </div>
-             */}
-
-{/* )} */}
-        </main>
-        </div>
+  {/* REPORT PAGE */}
+  {activeTab === 'Report' && (
+    <ReportIncident
+      language={language}
+    />
+  )}
+</main>
+</div>
       
     )
 }

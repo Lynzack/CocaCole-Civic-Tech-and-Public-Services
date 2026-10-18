@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import L from "leaflet";
 import {
   MapContainer,
   TileLayer,
@@ -8,30 +10,131 @@ import {
 
 import "leaflet/dist/leaflet.css";
 
-const services = [
-  {
-    name: "Support Centre 1",
-    type: "Hospital",
-    position: [4.385, 100.980]
-  },
-  {
-    name: "Support Centre 2",
-    type: "Police Station",
-    position: [4.400, 100.990]
-  }
-];
+const incidentIcon = L.divIcon({
+  className: "incident-map-icon",
+  html: `
+    <div class="incident-map-marker">
+      !
+    </div>
+  `,
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16]
+});
 
-function RecenterMap({ latitude, longitude }) {
+// const services = [
+//   {
+//     name: "Support Centre 1",
+//     type: "Hospital",
+//     position: [4.385, 100.980]
+//   },
+//   {
+//     name: "Support Centre 2",
+//     type: "Police Station",
+//     position: [4.400, 100.990]
+//   }
+// ];
+
+function RecenterMap({ latitude, longitude, recenterTrigger }) {
   const map = useMap();
 
-  if (latitude && longitude) {
-    map.setView([latitude, longitude], 15);
-  }
+  useEffect(() => {
+    if (latitude && longitude) {
+      map.setView([latitude, longitude], 15);
+    }
+  }, [latitude, longitude, recenterTrigger, map]);
 
   return null;
 }
 
-export default function SupportMap({ latitude, longitude }) {
+function ResizeMap() {
+  const map = useMap();
+
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+  }, [map]);
+
+  return null;
+}
+
+const text = {
+  BM: {
+    yourLocation: "Lokasi Anda",
+    status: "Status",
+    location: "Lokasi",
+    time: "Masa",
+    description: "Penerangan",
+
+    verified: "Disahkan",
+    pending: "Menunggu",
+
+    assault: "Serangan",
+    robbery: "Rompakan",
+    rape: "Rogol",
+    murder: "Pembunuhan",
+    sexualHarassment: "Gangguan Seksual",
+
+    today: "Hari ini",
+    yesterday: "Semalam"
+  },
+
+  ENG: {
+    yourLocation: "Your Location",
+    status: "Status",
+    location: "Location",
+    time: "Time",
+    description: "Description",
+
+    verified: "Verified",
+    pending: "Pending",
+
+    assault: "Assault",
+    robbery: "Robbery",
+    rape: "Rape",
+    murder: "Murder",
+    sexualHarassment: "Sexual Harassment",
+
+    today: "Today",
+    yesterday: "Yesterday"
+  }
+}
+
+export default function SupportMap({ 
+  latitude, 
+  longitude, 
+  recenterTrigger, 
+  incidents,
+  language 
+}) {
+
+  const t = text[language] || text.ENG
+
+  const translateIncidentType = (type) => {
+    const translations = {
+      Assault: t.assault,
+      Robbery: t.robbery,
+      Rape: t.rape,
+      Murder: t.murder,
+      "Sexual Harassment": t.sexualHarassment
+    }
+    return translations[type] || type
+  }
+
+  const translateStatus = (status) => {
+    if (status === "Verified") return t.verified
+    if (status === "Pending") return t.pending
+    return status
+  }
+
+  const translateTime = (time) => {
+    if (language === "ENG") return time
+    return time
+      .replace("Today", t.today)
+      .replace("Yesterday", t.yesterday)
+  }
+
   return (
     <MapContainer
       center={
@@ -41,11 +144,11 @@ export default function SupportMap({ latitude, longitude }) {
       }
       zoom={13}
       style={{
-        height: "500px",
+        height: "100%",
         width: "100%",
-        borderRadius: "12px"
       }}
     >
+      <ResizeMap />
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -54,19 +157,40 @@ export default function SupportMap({ latitude, longitude }) {
       <RecenterMap
         latitude={latitude}
         longitude={longitude}
+        recenterTrigger={recenterTrigger}
       />
       
       // USER LOCATION
       {latitude && longitude && (
         <Marker position={[latitude, longitude]}>
           <Popup>
-            <strong>Your Location</strong>
+            <strong>{t.yourLocation}</strong>
           </Popup>
         </Marker>
       )}
 
+      {/* INCIDENT MARKERS */}
+      {incidents.map((incident) => (
+        <Marker
+          key={incident.id}
+          position={[
+            incident.latitude,
+            incident.longitude
+          ]}
+          icon={incidentIcon}
+        >
+        <Popup>
+          <strong>{translateIncidentType(incident.type)}</strong>
+          <br />
+          {incident.location}
+          <br />
+          {translateTime(incident.time)}
+        </Popup>
+        </Marker>
+      ))}
+
       // SUPPORT SERVICES
-      {services.map((service, index) => (
+      {/* {services.map((service, index) => (
         <Marker
           key={index}
           position={service.position}
@@ -77,7 +201,7 @@ export default function SupportMap({ latitude, longitude }) {
             {service.type}
           </Popup>
         </Marker>
-      ))}
+      ))} */}
     </MapContainer>
   );
 }
