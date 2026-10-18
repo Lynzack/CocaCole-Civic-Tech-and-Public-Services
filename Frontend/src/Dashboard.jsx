@@ -8,7 +8,8 @@ export default function Dashboard({
   locationError,
   incidents,
   latitude,
-  longitude
+  longitude,
+  onIncidentClick
 }) {
     const [selectedFilter, setSelectedFilter] = useState('All')
 
@@ -176,9 +177,21 @@ export default function Dashboard({
             </div>
 
             {/* INCIDENT CARD */}
-            <div className="incident-list">
-                {sortedIncidents.map((incident) => (
-                    <div className="incident-card" key={incident.id}>
+        <div className="incident-list">
+             {sortedIncidents.map((incident) => (
+        <div
+            className="incident-card"
+            key={incident.id}
+            onClick={() => onIncidentClick(incident)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onIncidentClick(incident);
+                }
+            }}
+        >
                         <div className="incident-top-row">
                             <div className="incident-main-row">
 

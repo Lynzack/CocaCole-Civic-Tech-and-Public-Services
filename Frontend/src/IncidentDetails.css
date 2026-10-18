@@ -1,0 +1,379 @@
+/* =========================================
+   INCIDENT DETAILS PAGE
+========================================= */
+
+.incident-details-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100%;
+  margin: 0 auto;
+
+  background: #ffffff;
+  color: #242a35;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  overflow-x: hidden;
+  position: relative;
+}
+
+
+/* =========================================
+   MAP SECTION
+========================================= */
+
+.incident-map-section {
+  position: relative;
+
+  width: 100%;
+  height: 150px;
+
+  overflow: hidden;
+  background: #e9eee7;
+}
+
+.incident-map-iframe {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  border: none;
+}
+
+
+/* Back button */
+
+.incident-map-back,
+.incident-map-more {
+  position: absolute;
+
+  top: 8px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  color: #555b65;
+
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  z-index: 5;
+}
+
+.incident-map-back {
+  left: 8px;
+}
+
+.incident-map-more {
+  right: 8px;
+}
+
+
+/* Map placeholder */
+
+.incident-map-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  background: #edf1e9;
+
+  color: #68736c;
+  font-size: 12px;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.incident-details-content {
+  padding: 18px 16px 20px;
+  background: #ffffff;
+}
+
+
+/* =========================================
+   INCIDENT TITLE
+========================================= */
+
+.incident-title-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  width: 100%;
+
+  margin-bottom: 10px;
+}
+
+.incident-alert-icon {
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f04452;
+  color: #ffffff;
+
+  border-radius: 50%;
+}
+
+.incident-title-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.incident-title-text h1 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 1px;
+
+  color: #252b36;
+}
+
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+.incident-status {
+  flex-shrink: 0;
+
+  padding: 4px 9px;
+
+  border-radius: 12px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-verified {
+  color: #3976bf;
+  background: #eaf2ff;
+}
+
+.status-pending {
+  color: #a86a08;
+  background: #fff3d8;
+}
+
+
+/* =========================================
+   DATE AND LOCATION
+========================================= */
+
+.incident-metadata {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-left: 9px;
+  margin-bottom: 12px;
+}
+
+.incident-meta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.incident-meta-row svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: #9ca3af;
+}
+
+.incident-location-text {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.incident-approximate {
+  color: #737984;
+}
+
+
+/* =========================================
+   INCIDENT DESCRIPTION
+========================================= */
+
+
+.incident-description-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px;
+
+  margin-bottom: 17px;
+
+  background: hsl(222, 100%, 95%);
+
+  border-radius: 7px;
+}
+
+.incident-description-details svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color:rgb(63, 108, 255);
+}
+
+.incident-description-details p {
+  margin: 0;
+  text-align:center;
+
+  color: #55535a;
+
+  font-size: 11px;
+
+}
+
+
+/* =========================================
+   PRIVACY WARNING
+========================================= */
+
+.incident-privacy-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px;
+
+  margin-bottom: 17px;
+
+  background: #fff0f0;
+
+  border-radius: 7px;
+}
+
+.incident-privacy-warning svg {
+  flex-shrink: 0;
+
+  margin-top: 1px;
+
+  color: #ef4444;
+}
+
+.incident-privacy-warning p {
+  margin: 0;
+
+  color: #55535a;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   SAFETY ADVICE
+========================================= */
+
+.incident-safety-section {
+  width: 100%;
+}
+
+.incident-safety-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 8px;
+}
+
+.incident-safety-heading h2 {
+  margin: 0;
+
+  color: #252b36;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.incident-safety-list {
+  margin: 0;
+  padding-left: 15px;
+
+  color: #353b46;
+
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.incident-safety-list li {
+  padding-left: 1px;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.incident-empty {
+  padding: 20px;
+
+  color: #6b7280;
+  font-size: 13px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 360px) {
+  .incident-details-content {
+    padding: 15px 13px 18px;
+  }
+
+  .incident-map-section {
+    height: 125px;
+  }
+
+  .incident-title-text h1 {
+    font-size: 13px;
+  }
+}

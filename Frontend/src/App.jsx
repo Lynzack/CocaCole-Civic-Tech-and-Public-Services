@@ -5,9 +5,11 @@ import Dashboard from './Dashboard'
 import { useState } from 'react'
 import ReportIncident from "./ReportIncident";
 import SupportMap from "./SupportMap";
+import IncidentDetails from './IncidentDetails'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [selectedIncident, setSelectedIncident] = useState(null)
   // location
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
@@ -161,13 +163,17 @@ export default function App() {
 <nav className="nav-bar">
 
   <button
-    type="button"
-    className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
-    onClick={() => setActiveTab('dashboard')}
-  >
-    <LayoutDashboard size={22} />
-    <span>Dashboard</span>
-  </button>
+  type="button"
+  className={`nav-button ${
+    activeTab === 'dashboard' || activeTab === 'IncidentDetails'
+      ? 'active'
+      : ''
+  }`}
+  onClick={() => setActiveTab('dashboard')}
+>
+  <LayoutDashboard size={22} />
+  <span>Dashboard</span>
+</button>
 
   <button
     type="button"
@@ -216,6 +222,17 @@ export default function App() {
     incidents={incidents}
     latitude={latitude}
     longitude={longitude}
+    onIncidentClick={(incident) => {
+      setSelectedIncident(incident)
+      setActiveTab('IncidentDetails')
+    }}
+  />
+)}
+
+{activeTab === 'IncidentDetails' && selectedIncident && (
+  <IncidentDetails
+    incident={selectedIncident}
+    onBack={() => setActiveTab('dashboard')}
   />
 )}
 

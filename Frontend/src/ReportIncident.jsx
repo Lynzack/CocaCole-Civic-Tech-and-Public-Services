@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import {
+  Hand,
+  Wallet,
+  Skull,
   AlertTriangle,
-  Phone,
-  CreditCard,
   ShieldAlert,
   FileText,
   MapPin,
@@ -30,10 +31,10 @@ import "./ReportIncident.css";
 
 // Incident categories
 const incidentTypes = [
-  { id: "scam", label: "Scam / Fraud", icon: AlertTriangle },
-  { id: "harassment", label: "Harassment Calls", icon: Phone },
-  { id: "financial", label: "Financial Fraud", icon: CreditCard },
-  { id: "suspicious", label: "Suspicious Activity", icon: ShieldAlert },
+  { id: "assault", label: "Assault", icon: Hand },
+  { id: "robbery", label: "Robbery", icon: Wallet },
+  { id: "rape", label: "Rape", icon: ShieldAlert},
+  { id: "murder", label: "Murder", icon: Skull },
   { id: "other", label: "Other", icon: FileText },
 ];
 
