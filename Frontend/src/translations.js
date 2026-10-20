@@ -118,6 +118,7 @@ details: {
           "Hanya imej bersaiz maksimum 5 MB setiap satu dibenarkan.",
         requiredDetails:
           "Sila masukkan tarikh, masa dan keterangan insiden.",
+        photoRequired: "Sila muat naik sekurang-kurangnya satu foto."
       },
 
       successTitle: "Laporan Berjaya Dihantar!",
@@ -274,6 +275,7 @@ details: {
           "Only images up to 5 MB each are allowed.",
         requiredDetails:
           "Please provide the incident date, time, and description.",
+        photoRequired: "Please upload at least one photo."
       },
 
       successTitle: "Report Submitted!",

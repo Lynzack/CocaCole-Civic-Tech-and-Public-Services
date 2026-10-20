@@ -212,6 +212,10 @@ export default function ReportIncident({ language = "ENG" }) {
 
       return;
     }
+    if (photos.length === 0) {
+      setError("photoRequired");
+      return;
+    }
 
     const report = {
       incidentType,
@@ -692,25 +696,30 @@ export default function ReportIncident({ language = "ENG" }) {
 
                   <Upload size={26} />
 
-                  <strong>
-                    {t.report.uploadPhotos}
-                  </strong>
+                    <strong>
+                      {t.report.uploadPhotos}
+                    </strong>
 
-                  <span>
-                    {t.report.photoFormats}
-                  </span>
+                    <span>
+                      {t.report.photoFormats}
+                    </span>
 
-                  <span>
-                    {t.report.photoLimit}
-                  </span>
+                    <span>
+                      {t.report.photoLimit}
+                    </span>
 
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handlePhotoChange}
-                    disabled={photos.length >= 5}
-                  />
+                    <label className="custom-file-upload">
+
+                      <input
+                        className="hidden-file-input"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handlePhotoChange}
+                        disabled={photos.length >= 5}
+                      />
+
+                    </label>
 
                 </label>
 
@@ -795,7 +804,11 @@ export default function ReportIncident({ language = "ENG" }) {
 
               <AlertTriangle size={18} />
 
-              <span>{error}</span>
+              <span>
+                {error === "photoRequired"
+                  ? t.report.errors.photoRequired
+                  : error}
+              </span>
 
             </div>
           )}

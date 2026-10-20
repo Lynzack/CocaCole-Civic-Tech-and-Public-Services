@@ -409,6 +409,24 @@
   font-size: 12px;
 }
 
+.upload-area input[type="file"]::file-selector-button {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+
+  background: #dbeafe;
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.upload-area input[type="file"]::file-selector-button:hover {
+  background: #bfdbfe;
+}
+
 .photo-list {
   display: grid;
   gap: 8px;
@@ -612,4 +630,8 @@
   .progress-label {
     font-size: 10px;
   }
+}
+
+.hidden-file-input {
+  display: none;
 }
