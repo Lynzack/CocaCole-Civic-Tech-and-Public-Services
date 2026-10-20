@@ -78,7 +78,155 @@ function LocationPicker({ position, setPosition }) {
   );
 }
 
-export default function ReportIncident() {
+const translations = {
+  ENG: {
+    title: "Report an Incident",
+    subtitle: "Help us keep the community safe.",
+
+    steps: ["Incident Type", "Location", "Details"],
+    step: "STEP",
+    of: "OF",
+
+    chooseIncident: "Choose Incident Type",
+    incidentQuestion: "What type of incident would you like to report?",
+
+    incidentTypes: {
+      assault: "Assault",
+      robbery: "Robbery",
+      rape: "Rape",
+      murder: "Murder",
+      other: "Other",
+    },
+
+    locationTitle: "Set Incident Location",
+    locationQuestion: "Where did the incident happen?",
+    searchLocation: "Search location",
+    locationPlaceholder: "Enter an address or place",
+    searchButton: "Search location",
+    mapInstruction: "Tap the map to mark the incident location.",
+    selectedLocation: "Selected Location",
+    noLocation: "No location selected yet",
+    radius: "Approximate radius",
+    radiusHint: "Choose the approximate area around the incident.",
+
+    detailsTitle: "Additional Details",
+    detailsQuestion: "Provide more information about the incident.",
+    incidentDate: "Incident Date",
+    incidentTime: "Incident Time",
+    description: "Description",
+    descriptionPlaceholder:
+      "Describe what happened, including any relevant details...",
+    addPhotos: "Add Photos",
+    uploadPhotos: "Tap to upload photos",
+    photoFormats: "JPG, PNG or other image formats · Max 5 MB each",
+    photoLimit: "Up to 5 photos",
+
+    summary: "Report Summary",
+    incident: "Incident:",
+    location: "Location:",
+    back: "Back",
+    next: "Next",
+    submit: "Submit Report",
+
+    footer: "Please provide accurate information to help us review your report.",
+
+    errors: {
+      selectIncident: "Please select an incident type.",
+      selectLocation:
+        "Please search for a location or select one on the map.",
+      enterLocation: "Please enter a location to search.",
+      searchFailed: "Location search failed.",
+      locationNotFound: "Location not found. Please try another search.",
+      searchError: "Unable to search for the location. Please try again.",
+      photoSize: "Only images up to 5 MB each are allowed.",
+      requiredDetails:
+        "Please provide the incident date, time, and description.",
+    },
+
+    successTitle: "Report Submitted!",
+    successMessage:
+      "Your report has been prepared successfully. Connect the submission handler to your backend to save it permanently.",
+    createAnother: "Create Another Report",
+    removePhoto: "Remove photo",
+  },
+
+  BM: {
+    title: "Laporkan Insiden",
+    subtitle: "Bantu kami memastikan keselamatan komuniti.",
+
+    steps: ["Jenis Insiden", "Lokasi", "Butiran"],
+    step: "LANGKAH",
+    of: "DARIPADA",
+
+    chooseIncident: "Pilih Jenis Insiden",
+    incidentQuestion: "Apakah jenis insiden yang ingin anda laporkan?",
+
+    incidentTypes: {
+      assault: "Serangan",
+      robbery: "Rompakan",
+      rape: "Rogol",
+      murder: "Pembunuhan",
+      other: "Lain-lain",
+    },
+
+    locationTitle: "Tetapkan Lokasi Insiden",
+    locationQuestion: "Di manakah insiden tersebut berlaku?",
+    searchLocation: "Cari lokasi",
+    locationPlaceholder: "Masukkan alamat atau tempat",
+    searchButton: "Cari lokasi",
+    mapInstruction: "Tekan pada peta untuk menandakan lokasi insiden.",
+    selectedLocation: "Lokasi Dipilih",
+    noLocation: "Tiada lokasi dipilih",
+    radius: "Jejari anggaran",
+    radiusHint: "Pilih anggaran kawasan di sekitar lokasi insiden.",
+
+    detailsTitle: "Butiran Tambahan",
+    detailsQuestion: "Berikan maklumat lanjut tentang insiden tersebut.",
+    incidentDate: "Tarikh Insiden",
+    incidentTime: "Masa Insiden",
+    description: "Keterangan",
+    descriptionPlaceholder:
+      "Terangkan perkara yang berlaku, termasuk maklumat yang berkaitan...",
+    addPhotos: "Tambah Foto",
+    uploadPhotos: "Tekan untuk memuat naik foto",
+    photoFormats: "JPG, PNG atau format imej lain · Maksimum 5 MB setiap satu",
+    photoLimit: "Sehingga 5 foto",
+
+    summary: "Ringkasan Laporan",
+    incident: "Insiden:",
+    location: "Lokasi:",
+    back: "Kembali",
+    next: "Seterusnya",
+    submit: "Hantar Laporan",
+
+    footer:
+      "Sila berikan maklumat yang tepat untuk membantu kami menyemak laporan anda.",
+
+    errors: {
+      selectIncident: "Sila pilih jenis insiden.",
+      selectLocation:
+        "Sila cari lokasi atau pilih lokasi pada peta.",
+      enterLocation: "Sila masukkan lokasi untuk dicari.",
+      searchFailed: "Carian lokasi gagal.",
+      locationNotFound: "Lokasi tidak dijumpai. Sila cuba lokasi lain.",
+      searchError: "Lokasi tidak dapat dicari. Sila cuba lagi.",
+      photoSize: "Hanya imej bersaiz maksimum 5 MB setiap satu dibenarkan.",
+      requiredDetails:
+        "Sila masukkan tarikh, masa dan keterangan insiden.",
+    },
+
+    successTitle: "Laporan Berjaya Dihantar!",
+    successMessage:
+      "Laporan anda telah disediakan dengan jayanya. Sambungkan fungsi penghantaran kepada bahagian belakang sistem (backend) untuk menyimpan laporan secara kekal.",
+    createAnother: "Buat Laporan Baharu",
+    removePhoto: "Buang foto",
+  },
+};
+
+
+export default function ReportIncident({ language = "ENG" }) {
+  const t = translations[language] || translations.ENG;
+
   const [step, setStep] = useState(1);
   const [incidentType, setIncidentType] = useState("");
   const [position, setPosition] = useState(initialPosition);
@@ -96,14 +244,12 @@ export default function ReportIncident() {
     setError("");
 
     if (step === 1 && !incidentType) {
-      setError("Please select an incident type.");
+      setError(t.errors.selectIncident);
       return;
     }
 
     if (step === 2 && !locationLabel.trim()) {
-      setError(
-        "Please search for a location or select one on the map."
-      );
+      setError(t.errors.selectLocation);
       return;
     }
 
@@ -128,7 +274,7 @@ export default function ReportIncident() {
   const query = locationSearch.trim();
 
   if (!query) {
-    setError("Please enter a location to search.");
+    setError(t.errors.enterLocation);
     return;
   }
 
@@ -144,7 +290,7 @@ export default function ReportIncident() {
     const results = await response.json();
 
     if (results.length === 0) {
-      setError("Location not found. Please try another search.");
+      setError(t.errors.locationNotFound);
       return;
     }
 
@@ -162,7 +308,7 @@ export default function ReportIncident() {
     console.error("Location search error:", error);
 
     setError(
-      "Unable to search for the location. Please try again."
+      t.errors.searchError
     );
   }
 }
@@ -192,7 +338,7 @@ export default function ReportIncident() {
     );
 
     if (validFiles.length !== selectedFiles.length) {
-      setError("Only images up to 5 MB each are allowed.");
+      setError(t.errors.photoSize);
     } else {
       setError("");
     }
@@ -216,7 +362,7 @@ export default function ReportIncident() {
 
     if (!incidentDate || !incidentTime || !description.trim()) {
       setError(
-        "Please provide the incident date, time, and description."
+        t.errors.requiredDetails
       );
       return;
     }
@@ -249,11 +395,9 @@ export default function ReportIncident() {
             <Check size={36} />
           </div>
 
-          <h2>Report Submitted!</h2>
+          <h2>{t.successTitle}</h2>
           <p>
-            Your report has been prepared successfully.
-            Connect the submission handler to your backend
-            to save it permanently.
+            {t.successMessage}
           </p>
 
           <button
@@ -261,7 +405,7 @@ export default function ReportIncident() {
             className="primary-btn"
             onClick={() => window.location.reload()}
           >
-            Create Another Report
+            {t.createAnother}
           </button>
         </div>
       </div>
@@ -274,24 +418,51 @@ export default function ReportIncident() {
 
         {/* Header */}
         <header className="report-header">
-          
           <div>
-            <h1>Report an Incident</h1>
-            <p>
-              Help us keep the community safe.
-            </p>
+            <h1>{t.title}</h1>
+            <p>{t.subtitle}</p>
           </div>
         </header>
 
         {/* Progress indicator */}
         <div className="report-progress">
 
-          {[
-            { number: 1, label: "Incident Type" },
-            { number: 2, label: "Location" },
-            { number: 3, label: "Details" },
-          ].map((item, index) => (
-            <div
+          {t.steps.map((label, index) => {
+  const number = index + 1;
+
+  return (
+    <div className="progress-item" key={number}>
+      <div className="progress-top">
+        <div
+          className={`progress-circle ${
+            step >= number ? "completed" : ""
+          }`}
+        >
+          {step > number ? <Check size={18} /> : number}
+        </div>
+
+        {index < 2 && (
+          <div
+            className={`progress-line ${
+              step > number ? "completed" : ""
+            }`}
+          />
+        )}
+      </div>
+
+      <span
+        className={
+          step >= number
+            ? "progress-label active"
+            : "progress-label"
+        }
+      >
+        {label}
+      </span>
+    </div>
+  );
+})}
+            {/* <div
               className="progress-item"
               key={item.number}
             >
@@ -327,7 +498,7 @@ export default function ReportIncident() {
                 {item.label}
               </span>
             </div>
-          ))}
+          ))} */}
 
         </div>
 
@@ -338,21 +509,20 @@ export default function ReportIncident() {
             <section className="report-card">
               <div className="section-heading">
                 <span className="step-caption">
-                  STEP 1 OF 3
+                  {t.step} 1 {t.of} 3
                 </span>
 
-                <h2>Choose Incident Type</h2>
+                <h2>{t.chooseIncident}</h2>
 
                 <p>
-                  What type of incident would you like to report?
+                  {t.incidentQuestion}
                 </p>
               </div>
 
               <div className="incident-grid">
                 {incidentTypes.map((item) => {
                   const Icon = item.icon;
-                  const selected =
-                    incidentType === item.id;
+                  const selected = incidentType === item.id;
 
                   return (
                     <button
@@ -371,7 +541,7 @@ export default function ReportIncident() {
                         <Icon size={25} />
                       </div>
 
-                      <span>{item.label}</span>
+                      <span>{t.incidentTypes[item.id]}</span>
 
                       {selected && (
                         <Check
@@ -391,13 +561,13 @@ export default function ReportIncident() {
             <section className="report-card">
               <div className="section-heading">
                 <span className="step-caption">
-                  STEP 2 OF 3
+                  {t.step} 2 {t.of} 3
                 </span>
 
-                <h2>Set Incident Location</h2>
+                <h2>{t.locationTitle}</h2>
 
                 <p>
-                  Where did the incident happen?
+                  {t.locationQuestion}
                 </p>
               </div>
 
@@ -405,7 +575,7 @@ export default function ReportIncident() {
                 className="field-label"
                 htmlFor="location-search"
               >
-                Search location
+                {t.searchLocation}
               </label>
 
               <div className="location-search">
@@ -414,7 +584,7 @@ export default function ReportIncident() {
   <input
     id="location-search"
     type="text"
-    placeholder="Enter an address or place"
+    placeholder={t.locationPlaceholder}
     value={locationSearch}
     onChange={(event) =>
       setLocationSearch(event.target.value)
@@ -429,7 +599,7 @@ export default function ReportIncident() {
 
   <button
     type="button"
-    aria-label="Search location"
+    aria-label={t.searchLocation}
     onClick={handleLocationSearch}
   >
     <Navigation size={19} />
@@ -440,7 +610,7 @@ export default function ReportIncident() {
 
               <div className="map-instructions">
                 <MapPin size={16} />
-                Tap the map to mark the incident location.
+                {t.mapInstruction}
               </div>
 
               <div className="report-map">
@@ -467,10 +637,10 @@ export default function ReportIncident() {
                 <MapPin size={20} />
 
                 <div>
-                  <strong>Selected Location</strong>
+                  <strong>{t.selectedLocation}</strong>
                   <p>
                     {locationLabel ||
-                      "No location selected yet"}
+                      t.noLocation}
                   </p>
                 </div>
               </div>
@@ -480,11 +650,11 @@ export default function ReportIncident() {
                   className="field-label"
                   htmlFor="radius"
                 >
-                  Approximate radius
+                  {t.radius}
                 </label>
 
                 <p className="field-hint">
-                  Choose the approximate area around the incident.
+                  {t.radiusHint}
                 </p>
 
                 <div className="radius-options">
@@ -512,13 +682,13 @@ export default function ReportIncident() {
             <section className="report-card">
               <div className="section-heading">
                 <span className="step-caption">
-                  STEP 3 OF 3
+                  {t.step} 3 {t.of} 3
                 </span>
 
-                <h2>Additional Details</h2>
+                <h2>{t.detailsTitle}</h2>
 
                 <p>
-                  Provide more information about the incident.
+                  {t.detailsQuestion}
                 </p>
               </div>
 
@@ -528,7 +698,7 @@ export default function ReportIncident() {
                   htmlFor="incident-date"
                 >
                   <CalendarDays size={18} />
-                  Incident Date
+                  {t.incidentDate}
                 </label>
 
                 <input
@@ -548,7 +718,7 @@ export default function ReportIncident() {
                   htmlFor="incident-time"
                 >
                   <Clock size={18} />
-                  Incident Time
+                  {t.incidentTime}
                 </label>
 
                 <input
@@ -567,13 +737,13 @@ export default function ReportIncident() {
                   className="field-label"
                   htmlFor="description"
                 >
-                  Description
+                  {t.description}
                 </label>
 
                 <textarea
                   id="description"
                   rows={5}
-                  placeholder="Describe what happened, including any relevant details..."
+                  placeholder={t.descriptionPlaceholder}
                   value={description}
                   onChange={(event) =>
                     setDescription(event.target.value)
@@ -590,22 +760,22 @@ export default function ReportIncident() {
               <div className="form-field">
                 <label className="field-label">
                   <Camera size={18} />
-                  Add Photos
+                  {t.addPhotos}
                 </label>
 
                 <label className="upload-area">
                   <Upload size={26} />
 
                   <strong>
-                    Tap to upload photos
+                    {t.uploadPhotos}
                   </strong>
 
                   <span>
-                    JPG, PNG or other image formats · Max 5 MB each
+                    {t.photoFormats}
                   </span>
 
                   <span>
-                    Up to 5 photos
+                    {t.photoLimit}
                   </span>
 
                   <input
@@ -640,22 +810,20 @@ export default function ReportIncident() {
               </div>
 
               <div className="report-summary">
-                <h3>Report Summary</h3>
+                <h3>{t.summary}</h3>
 
                 <p>
-                  <strong>Incident:</strong>{" "}
-                  {incidentTypes.find(
-                    (item) => item.id === incidentType
-                  )?.label}
+                  <strong>{t.incident}</strong>{" "}
+                  {t.incidentTypes[incidentType]}
                 </p>
 
                 <p>
-                  <strong>Location:</strong>{" "}
+                  <strong>{t.location}</strong>{" "}
                   {locationLabel}
                 </p>
 
                 <p>
-                  <strong>Radius:</strong>{" "}
+                  <strong>{t.radius}:</strong>{" "}
                   {radius >= 1000
                     ? `${radius / 1000} km`
                     : `${radius} m`}
@@ -682,7 +850,7 @@ export default function ReportIncident() {
                 onClick={previousStep}
               >
                 <ChevronLeft size={19} />
-                Back
+                {t.back}
               </button>
             )}
 
@@ -692,7 +860,7 @@ export default function ReportIncident() {
                 className="primary-btn"
                 onClick={nextStep}
               >
-                Next
+                {t.next}
                 <ChevronRight size={19} />
               </button>
             ) : (
@@ -701,7 +869,7 @@ export default function ReportIncident() {
                 className="primary-btn submit-btn"
               >
                 <Check size={19} />
-                Submit Report
+                {t.submit}
               </button>
             )}
 
@@ -710,8 +878,7 @@ export default function ReportIncident() {
         </form>
 
         <p className="report-footer">
-          Please provide accurate information to help us
-          review your report.
+          {t.footer}
         </p>
 
       </div>
