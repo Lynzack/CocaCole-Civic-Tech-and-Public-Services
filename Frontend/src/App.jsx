@@ -253,6 +253,7 @@ export default function App() {
   <IncidentDetails
     incident={selectedIncident}
     onBack={() => setActiveTab('dashboard')}
+    language={language}
   />
 )}
 

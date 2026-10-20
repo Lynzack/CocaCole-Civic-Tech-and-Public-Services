@@ -39,6 +39,17 @@ const translations = {
       other: "Lain-lain"
     },
 
+  
+details: {
+  noTime: "Tiada Masa",
+  noLocation: "Tiada Lokasi",
+  incidentWarning: "Sila sentiasa berwaspada semasa melalui kawasan ini.",
+  privacywarning: "Lokasi ini dipaparkan secara anggaran untuk melindungi privasi individu yang terlibat.",
+  approximateLocation : "Jarak Anggaran"
+},
+
+
+
     locationPage: {
       searchPlaceholder: "Cari kawasan atau lokasi...",
       yourLocation: "Lokasi Anda",
@@ -159,6 +170,14 @@ const translations = {
       financial: "Financial Fraud",
       suspicious: "Suspicious Activity",
       other: "Other"
+    },
+
+    details:{
+      noTime : "Time unavailable",
+      noLocation:"Location unavailable",
+      incidentWarning:"Please remain cautious when travelling in this area.",
+      privacywarning : "This location is shown approximately to protect the privacy of individuals involved.",
+      approximateLocation : "Approximate Location"
     },
 
     locationPage: {

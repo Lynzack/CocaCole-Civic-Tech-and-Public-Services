@@ -1,4 +1,5 @@
 import React from "react";
+import translations from './translations'
 import {
   ChevronLeft,
   MoreHorizontal,
@@ -15,6 +16,7 @@ import "./IncidentDetails.css";
 export default function IncidentDetails({
   incident,
   onBack,
+  language = "ENG"
 }) {
   if (!incident) {
     return (
@@ -32,21 +34,55 @@ export default function IncidentDetails({
       </div>
     );
   }
+  const t = translations[language] || translations.ENG
 
-  const incidentType = incident.type || "Incident";
+
+const translateIncidentType = (type) => {
+        const typeMap = {
+            Assault: 'assault',
+            Robbery: 'robbery',
+            Rape: 'rape',
+            Murder: 'murder',
+            'Sexual Harassment': 'sexualHarassment',
+            Other : "other"
+        }
+
+        const key = typeMap[type]
+
+        return key ? t.incidentTypes[key] : type
+        }
+
+    const translateStatus = (status) => {
+        if (status === 'Verified') return t.common.verified
+        if (status === 'Pending') return t.common.pending
+
+        return status
+    }
+
+    const translateTime = (time) => {
+        if (language === 'ENG') return time
+
+        return time
+            .replace('Today', t.common.today)
+            .replace('Yesterday', t.common.yesterday)
+    }
+
+const incidentType = incident.type
+  ? translateIncidentType(incident.type)
+  : t.dashboard.incidents;
 
   const incidentTime =
-    incident.time || "Time unavailable";
+    translateTime(incident.time) || t.details.noTime;
 
   const incidentLocation =
-    incident.location || "Location unavailable";
+    incident.location || t.details.noLocation;
 
   const incidentDescription =
     incident.description ||
-    "Please remain cautious when travelling in this area.";
+    t.details.incidentWarning;
 
   const isVerified =
-    (incident.status || "").toLowerCase() === "verified";
+  (incident.status || "").toLowerCase() === "verified";
 
   const latitude = Number(incident.latitude);
   const longitude = Number(incident.longitude);
@@ -145,7 +181,7 @@ export default function IncidentDetails({
           </div>
 
           <div className="incident-title-text">
-            <h1>{incidentType}</h1>
+            <h1>{t.incidentTypes[incidentType] || incidentType}</h1>
           </div>
 
           <span
@@ -155,7 +191,7 @@ export default function IncidentDetails({
                 : "status-pending"
             }`}
           >
-            {isVerified ? "Verified" : "Pending"}
+            {translateStatus(incident.status)}
           </span>
 
         </div>
@@ -177,7 +213,7 @@ export default function IncidentDetails({
             <div className="incident-location-text">
               <span>{incidentLocation}</span>
               <span className="incident-approximate">
-                (Approximate location)
+                ({t.details.approximateLocation})
               </span>
             </div>
           </div>
@@ -189,7 +225,7 @@ export default function IncidentDetails({
         <div className = "incident-description-details">
           <Info size={17} />
 
-          <p>{incidentDescription}
+          <p>{incidentDescription}  
           </p>
         </div>
         
@@ -202,8 +238,7 @@ export default function IncidentDetails({
           <AlertCircle size={17} />
 
           <p>
-            This location is shown approximately to
-            protect the privacy of individuals involved.
+            {t.details.privacywarning}
           </p>
 
         </div>
