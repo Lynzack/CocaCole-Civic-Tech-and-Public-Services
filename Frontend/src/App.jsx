@@ -1,12 +1,13 @@
 
-import { LayoutDashboard, Map, Plus, Bell, User } from 'lucide-react';
+import { LayoutDashboard, Map, Plus, Headphones, User } from 'lucide-react';
 import './App.css'
 import Dashboard from './Dashboard';
-import Location from './Location'
+import Location from './Locations';
 import { useState } from 'react'
 import ReportIncident from "./ReportIncident";
 import SupportMap from "./SupportMap";
 import IncidentDetails from './IncidentDetails'
+import Support from './Support'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -214,11 +215,11 @@ export default function App() {
 
    <button
     type="button"
-    className={`nav-button ${activeTab === 'Alerts' ? 'active' : ''}`}
-    onClick={() => setActiveTab('Alerts')}
+    className={`nav-button ${activeTab === 'Support' ? 'active' : ''}`}
+    onClick={() => setActiveTab('Support')}
   >
-    <Bell size={22} />
-    <span>{language === 'BM' ? 'Amaran' : 'Alerts'}</span>
+    <Headphones size={22} />
+    <span>{language === 'BM' ? 'Sokongan' : 'Support'}</span>
   </button>
 
   <button
@@ -275,6 +276,13 @@ export default function App() {
       language={language}
     />
   )}
+
+  {activeTab === 'Support' && (
+    <Support 
+      language={language}
+    />
+  )}
+
 </main>
 </div>
       

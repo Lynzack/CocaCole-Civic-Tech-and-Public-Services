@@ -4,7 +4,7 @@ const translations = {
       home: "Utama",
       location: "Lokasi",
       report: "Lapor",
-      alerts: "Amaran",
+      supports: "Sokongan",
       profile: "Profil",
 
       verified: "Disahkan",
@@ -129,6 +129,31 @@ details: {
       locationDetails: "Butiran Lokasi",
       locationDetailsPlaceholder:
         "Contoh: Nama bangunan, nama jalan, tingkat, nombor unit",
+    },
+
+    support: {
+      title: "Sokongan",
+      subtitle: "Cari jawapan atau dapatkan panduan.",
+      searchPlaceholder: "Cari topik sokongan...",
+      emergencyTitle: "Perlukan bantuan segera?",
+      emergencyText: "Hubungi 999 jika anda berada dalam bahaya.",
+      call999: "Hubungi 999",
+      faqTitle: "Soalan Lazim",
+      faqSubtitle: "Pilih kategori untuk mencari jawapan.",
+      aiAssistant: "Pembantu AI",
+      aiSubtitle: "Pembantu keselamatan anda",
+      typeMessage: "Taip mesej anda...",
+      robberyQuick: "Apa perlu saya lakukan selepas rompakan?",
+      reportQuick: "Bagaimana membuat laporan?",
+      safetyQuick: "Berikan tip keselamatan",
+      categories: {
+        generalSafety: "Keselamatan Umum",
+        rapeSexualAssault: "Rogol & Serangan Seksual",
+        sexualHarassment: "Gangguan Seksual",
+        murderViolence: "Pembunuhan & Keganasan Serius",
+        robbery: "Rompakan",
+        physicalAssault: "Serangan Fizikal"
+      }
     }
   },
 
@@ -137,7 +162,7 @@ details: {
       home: "Home",
       location: "Location",
       report: "Report",
-      alerts: "Alerts",
+      supports: "Support",
       profile: "Profile",
 
       verified: "Verified",
@@ -259,6 +284,32 @@ details: {
       locationDetails: "Location Details",
       locationDetailsPlaceholder:
         "e.g. Building name, street name, floor, unit number",
+    },
+
+    support: {
+      title: "Support",
+      subtitle: "Find answers or get guidance.",
+      searchPlaceholder: "Search support topics...",
+      emergencyTitle: "Need immediate help?",
+      emergencyText: "Call 999 if you are in danger.",
+      call999: "Call 999",
+      faqTitle: "Frequently Asked Questions",
+      faqSubtitle: "Choose a category to find answers.",
+      aiAssistant: "AI Assistant",
+      aiSubtitle: "Your safety support companion",
+      typeMessage: "Type your message...",
+      robberyQuick: "What should I do after a robbery?",
+      reportQuick: "How do I make a report?",
+      safetyQuick: "Give me safety tips",
+
+      categories: {
+        generalSafety: "General Safety",
+        rapeSexualAssault: "Rape & Sexual Assault",
+        sexualHarassment: "Sexual Harassment",
+        murderViolence: "Murder & Serious Violence",
+        robbery: "Robbery",
+        physicalAssault: "Physical Assault"
+      }
     }
   }
 }
