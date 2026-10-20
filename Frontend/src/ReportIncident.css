@@ -275,7 +275,7 @@
   z-index: 1;
 }
 
-.selected-location {
+.selected-location + .form-field {
   display: flex;
   gap: 12px;
   align-items: flex-start;
@@ -338,6 +338,7 @@
   margin-bottom: 22px;
 }
 
+.form-field input[type="text"],
 .form-field input[type="date"],
 .form-field input[type="time"],
 .form-field textarea {

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './Dashboard.css';
+import translations from './translations'
 import { MapPin } from 'lucide-react'
 
 export default function Dashboard({
@@ -13,67 +14,34 @@ export default function Dashboard({
   onIncidentClick
 }) {
     const [selectedFilter, setSelectedFilter] = useState('All')
-
-    //Language translations
-    const text = {
-    BM: {
-        selectedLocation: 'Lokasi dipilih',
-        getLocation: 'Dapatkan lokasi',
-        incidents: 'Insiden',
-        all: 'Semua',
-        assault: 'Serangan',
-        robbery: 'Rompakan',
-        rape: 'Rogol',
-        murder: 'Pembunuhan',
-        sexualHarassment: 'Gangguan Seksual',
-        distanceUnavailable: 'Jarak tidak tersedia',
-        verified: 'Disahkan',
-        pending: 'Menunggu',
-        today: 'Hari ini',
-        yesterday: 'Semalam'
-    },
-
-    ENG: {
-        selectedLocation: 'Selected location',
-        getLocation: 'Get Location',
-        incidents: 'Incidents',
-        all: 'All',
-        assault: 'Assault',
-        robbery: 'Robbery',
-        rape: 'Rape',
-        murder: 'Murder',
-        sexualHarassment: 'Sexual Harassment',
-        distanceUnavailable: 'Distance unavailable',
-        verified: 'Verified',
-        pending: 'Pending',
-        today: 'Today',
-        yesterday: 'Yesterday'
-    }
-    }
-    const t = text[language]
-
+    const t = translations[language] || translations.ENG
     const translateIncidentType = (type) => {
-    const translations = {
-        Assault: t.assault,
-        Robbery: t.robbery,
-        Rape: t.rape,
-        Murder: t.murder,
-        'Sexual Harassment': t.sexualHarassment
-    }
-    return translations[type] || type
-    }
+        const typeMap = {
+            Assault: 'assault',
+            Robbery: 'robbery',
+            Rape: 'rape',
+            Murder: 'murder',
+            'Sexual Harassment': 'sexualHarassment'
+        }
+
+        const key = typeMap[type]
+
+        return key ? t.incidentTypes[key] : type
+        }
 
     const translateStatus = (status) => {
-    if (status === 'Verified') {return t.verified}
-    if (status === 'Pending') {return t.pending}
-    return status
+        if (status === 'Verified') return t.common.verified
+        if (status === 'Pending') return t.common.pending
+
+        return status
     }
 
     const translateTime = (time) => {
-    if (language === 'ENG') {return time}
-    return time
-        .replace('Today', 'Hari ini')
-        .replace('Yesterday', 'Semalam')
+        if (language === 'ENG') return time
+
+        return time
+            .replace('Today', t.common.today)
+            .replace('Yesterday', t.common.yesterday)
     }
 
     // 1. Calculate distance
@@ -163,8 +131,8 @@ export default function Dashboard({
             <MapPin size={25} className="selected-location-icon" />
 
             <div className="selected-location-text">
-                <h3>{t.selectedLocation}</h3>
-                <p>{userLocation || t.getLocation}</p>
+                <h3>{t.dashboard.selectedLocation}</h3>
+                <p>{userLocation || t.dashboard.getLocation}</p>
             </div>
 
             </div>
@@ -177,7 +145,7 @@ export default function Dashboard({
 
             {/* // INCIDENTS Header */}
             <div className="dash-header">
-            <h2>{t.incidents}</h2>
+            <h2>{t.dashboard.incidents}</h2>
             </div>
 
             {/* INCIDENTS FILTER */}
@@ -189,7 +157,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('All')}
             >
-                {t.all}
+                {t.dashboard.all}
             </button>
 
             <button
@@ -198,7 +166,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Assault')}
             >
-                {t.assault}
+                {t.incidentTypes.assault}
             </button>
 
             <button
@@ -207,7 +175,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Robbery')}
             >
-                {t.robbery}
+                {t.incidentTypes.robbery}
             </button>
 
             <button
@@ -216,7 +184,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Rape')}
             >
-                {t.rape}
+                {t.incidentTypes.rape}
             </button>
 
             <button
@@ -225,7 +193,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Murder')}
             >
-                {t.murder}
+                {t.incidentTypes.murder}
             </button>
 
             <button
@@ -234,7 +202,7 @@ export default function Dashboard({
                 }`}
                 onClick={() => setSelectedFilter('Sexual Harassment')}
             >
-                {t.sexualHarassment}
+                {t.incidentTypes.sexualHarassment}
             </button>
 
             </div>
@@ -267,7 +235,7 @@ export default function Dashboard({
                                     <p className="incident-meta">
                                         {Number.isFinite(incident.calculatedDistance)
                                             ? `~ ${incident.calculatedDistance.toFixed(1)} km`
-                                            : t.distanceUnavailable
+                                            : t.dashboard.distanceUnavailable
                                         }
                                         {' • '}
                                         {translateTime(incident.time)}

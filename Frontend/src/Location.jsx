@@ -1,4 +1,5 @@
 import './Location.css'
+import translations from './translations'
 import { Search, SlidersHorizontal, LocateFixed } from 'lucide-react'
 import SupportMap from './SupportMap'
 import { useState } from 'react'
@@ -11,13 +12,8 @@ export default function Location({
   language
 }) {
   const [recenterTrigger, setRecenterTrigger] = useState(0)
+  const t = translations[language] || translations.ENG
 
-  const text = {
-  BM: {searchPlaceholder: 'Cari kawasan atau lokasi...'},
-  ENG: {searchPlaceholder: 'Search area or location...'}
-}
-
-const t = text[language]
 
   return (
     <div className="location-page">
@@ -30,7 +26,7 @@ const t = text[language]
 
           <input
             type="text"
-            placeholder={t.searchPlaceholder}
+            placeholder={t.locationPage.searchPlaceholder}
           />
         </div>
 

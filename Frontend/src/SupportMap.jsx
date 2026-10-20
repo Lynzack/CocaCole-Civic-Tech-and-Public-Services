@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import L from "leaflet";
+import translations from './translations'
 import {
   MapContainer,
   TileLayer,
@@ -59,48 +60,6 @@ function ResizeMap() {
   return null;
 }
 
-const text = {
-  BM: {
-    yourLocation: "Lokasi Anda",
-    status: "Status",
-    location: "Lokasi",
-    time: "Masa",
-    description: "Penerangan",
-
-    verified: "Disahkan",
-    pending: "Menunggu",
-
-    assault: "Serangan",
-    robbery: "Rompakan",
-    rape: "Rogol",
-    murder: "Pembunuhan",
-    sexualHarassment: "Gangguan Seksual",
-
-    today: "Hari ini",
-    yesterday: "Semalam"
-  },
-
-  ENG: {
-    yourLocation: "Your Location",
-    status: "Status",
-    location: "Location",
-    time: "Time",
-    description: "Description",
-
-    verified: "Verified",
-    pending: "Pending",
-
-    assault: "Assault",
-    robbery: "Robbery",
-    rape: "Rape",
-    murder: "Murder",
-    sexualHarassment: "Sexual Harassment",
-
-    today: "Today",
-    yesterday: "Yesterday"
-  }
-}
-
 export default function SupportMap({ 
   latitude, 
   longitude, 
@@ -109,30 +68,31 @@ export default function SupportMap({
   language 
 }) {
 
-  const t = text[language] || text.ENG
+  const t = translations[language] || translations.ENG
 
-  const translateIncidentType = (type) => {
-    const translations = {
-      Assault: t.assault,
-      Robbery: t.robbery,
-      Rape: t.rape,
-      Murder: t.murder,
-      "Sexual Harassment": t.sexualHarassment
-    }
-    return translations[type] || type
+const translateIncidentType = (type) => {
+  const typeMap = {
+    Assault: "assault",
+    Robbery: "robbery",
+    Rape: "rape",
+    Murder: "murder",
+    "Sexual Harassment": "sexualHarassment"
   }
+  const key = typeMap[type]
+  return key ? t.incidentTypes[key] : type
+}
 
   const translateStatus = (status) => {
-    if (status === "Verified") return t.verified
-    if (status === "Pending") return t.pending
+    if (status === "Verified") return t.common.verified
+    if (status === "Pending") return t.common.pending
     return status
   }
 
   const translateTime = (time) => {
     if (language === "ENG") return time
     return time
-      .replace("Today", t.today)
-      .replace("Yesterday", t.yesterday)
+      .replace("Today", t.common.today)
+      .replace("Yesterday", t.common.yesterday)
   }
 
   return (
@@ -164,7 +124,7 @@ export default function SupportMap({
       {latitude && longitude && (
         <Marker position={[latitude, longitude]}>
           <Popup>
-            <strong>{t.yourLocation}</strong>
+            <strong>{t.locationPage.yourLocation}</strong>
           </Popup>
         </Marker>
       )}
