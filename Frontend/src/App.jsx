@@ -8,6 +8,7 @@ import ReportIncident from "./ReportIncident";
 import SupportMap from "./SupportMap";
 import IncidentDetails from './IncidentDetails'
 import Support from './Support'
+import Profile from './profile'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -279,6 +280,12 @@ export default function App() {
 
   {activeTab === 'Support' && (
     <Support 
+      language={language}
+    />
+  )}
+
+    {activeTab === 'Profile' && (
+    <Profile 
       language={language}
     />
   )}
