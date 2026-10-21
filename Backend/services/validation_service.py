@@ -34,7 +34,11 @@ TRUSTED_DOMAINS = {
     "rmp.gov.my",
     "bernama.com",
     "astroawani.com",
-    "apnews.com"
+    "apnews.com",
+    "thestar.com.my",
+    "nst.com.my",
+    "malaymail.com",
+    "freemalaysiatoday.com"
 }
 
 
@@ -52,18 +56,6 @@ def make_result(status, **body):
         "body": body,
         "status": status
     }
-
-
-def is_trusted_source(web):
-    uri = getattr(web, "uri", "") or ""
-
-    # Search results may use a Google redirect URL.
-    # In that case, use the publisher domain in the metadata.
-    domain = (
-        getattr(web, "domain", "")
-        or urlparse(uri).hostname
-        or ""
-    )
 
     domain_url = (
         domain
@@ -230,9 +222,22 @@ def search_trusted_sources(category, incident_date, area_name):
     )
 
     # Use a general area name here, not a person's name or house address.
+
+    category_terms = {
+        "rape": "(rape OR rogol)",
+        "assault": "(assault OR serangan OR dipukul)",
+        "sexual harassment": (
+            '("sexual harassment" OR "gangguan seksual")'
+        ),
+        "murder": "(murder OR bunuh)",
+        "robbery": "(robbery OR rompak OR samun)"
+    }
+
+    keywords = category_terms.get(category, category)
+
     query = (
-        f'{category} "{area_name}" Malaysia {incident_date} '
-        f'({site_filter}) -site:reuters.com/video/'
+        f'{keywords} {area_name} Malaysia '
+        f'({site_filter})'
     )
 
     response = httpx.post(
@@ -245,7 +250,7 @@ def search_trusted_sources(category, incident_date, area_name):
             "q": query,
             "gl": "my",
             "hl": "en",
-            "num": 5
+            "num": 10
         },
         timeout=30
     )
@@ -268,7 +273,9 @@ def search_trusted_sources(category, incident_date, area_name):
             matching_links.append(item)
 
     # Read up to three trusted articles.
-    for item in matching_links[:3]:
+    for item in matching_links:
+        if len(sources) >= 3:
+            break
         try:
             article = read_article(item["link"])
 
@@ -498,7 +505,7 @@ def validate_incident(incident_id):
 
         print("Source check:", source_check)
         print("Readable trusted sources:", len(sources))
-        # Second call: assess the report and photo.
+        # Assess the report and photo with Gemini.
         review_prompt = """
 You screen incident submissions for a public safety app.
 
@@ -704,7 +711,6 @@ Review data:
             }
             for source in supporting_sources
         ]
-
         
 
         # The existing SQL function accepts only these radii.

@@ -3,7 +3,9 @@ import os
 from uuid import UUID
 
 from flask import Blueprint, jsonify, request
+
 from services.validation_service import validate_incident
+
 
 validation_bp = Blueprint("validation", __name__)
 
@@ -21,7 +23,9 @@ def review_incident(incident_id):
             "message": "Review endpoint is not configured"
         }), 503
 
-    supplied_token = request.headers.get("X-Validation-Token", "")
+    supplied_token = request.headers.get(
+        "X-Validation-Token", ""
+    )
 
     if not hmac.compare_digest(supplied_token, expected_token):
         return jsonify({
@@ -35,6 +39,31 @@ def review_incident(incident_id):
         return jsonify({
             "success": False,
             "message": "Invalid incident ID"
+        }), 400
+
+    data = {}
+
+    if request.get_data():
+        if not request.is_json:
+            return jsonify({
+                "success": False,
+                "message": "Use a JSON body"
+            }), 415
+
+        data = request.get_json(silent=True)
+
+        if not isinstance(data, dict):
+            return jsonify({
+                "success": False,
+                "message": "Body must be a JSON object"
+            }), 400
+
+    review_only = data.get("review_only", False)
+
+    if not isinstance(review_only, bool):
+        return jsonify({
+            "success": False,
+            "message": "review_only must be true or false"
         }), 400
 
     result = validate_incident(incident_id)

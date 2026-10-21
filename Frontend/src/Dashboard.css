@@ -230,3 +230,95 @@
 
   color: #737373;
 }
+
+.feed-controls {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.feed-button {
+  padding: 9px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: white;
+  color: #1d4ed8;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.feed-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.feed-message {
+  width: 100%;
+  padding: 12px 4px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.feed-error {
+  color: #b91c1c;
+}
+
+.feed-error p {
+  margin: 0 0 8px;
+}
+
+.incident-badge.feed-unverified {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.incident-card:focus-visible,
+.feed-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+.incident-heading-text {
+  min-width: 0;
+}
+
+.incident-meta,
+.incident-description,
+.incident-location {
+  overflow-wrap: anywhere;
+}
+
+.incident-badge {
+  white-space: normal;
+  flex-shrink: 0;
+  max-width: 110px;
+}
+
+.feed-card-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.feed-state-page {
+  padding: 20px;
+}
+
+.feed-sources {
+  text-align: left;
+  padding: 12px 0;
+}
+
+.feed-sources a {
+  color: #1d4ed8;
+  overflow-wrap: anywhere;
+}
+
+.feed-sources li {
+  margin-bottom: 8px;
+}

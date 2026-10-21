@@ -215,3 +215,23 @@
   border-color: #2563eb;
   color: white;
 }
+
+.location-search-icon-button {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 8px;
+
+  background: white;
+  color: #2563eb;
+
+  cursor: pointer;
+}
+
+.location-search-icon-button:hover {
+  background: #f3f4f6;
+}

@@ -39,14 +39,65 @@ const translations = {
       other: "Lain-lain"
     },
 
+    incidentDescriptions: {
+      assaultArea:
+        "Seorang lelaki dilihat menyerang individu lain berhampiran tepi jalan. Mangsa kelihatan cedera sebelum penyerang meninggalkan kawasan tersebut.",
+
+      robberyNearby:
+        "Seorang individu melaporkan bahawa mereka didatangi oleh seorang perompak yang mengambil barang milik mereka sebelum melarikan diri dari kawasan tersebut.",
+
+      assaultCommercial:
+        "Pergaduhan fizikal dilaporkan berhampiran kawasan komersial. Seorang individu dilihat dipukul beberapa kali sebelum orang lain campur tangan.",
+
+      robberyResidential:
+        "Seorang penduduk melaporkan bahawa barang miliknya dicuri berhampiran kawasan perumahan oleh individu yang tidak dikenali.",
+
+      rapeNearby:
+        "Satu kejadian serangan seksual dilaporkan berhampiran kawasan tersebut. Mangsa membuat laporan selepas berjaya pergi ke tempat yang lebih selamat.",
+
+      personalBelongingStolen:
+        "Seorang individu melaporkan bahawa barang peribadinya telah dicuri semasa berada di kawasan tersebut.",
+
+      rapeReported:
+        "Satu kejadian serangan seksual dilaporkan di kawasan tersebut. Mangsa kemudian memaklumkan kepada seseorang yang dipercayai dan membuat laporan."
+    },
+
   
-details: {
-  noTime: "Tiada Masa",
-  noLocation: "Tiada Lokasi",
-  incidentWarning: "Sila sentiasa berwaspada semasa melalui kawasan ini.",
-  privacywarning: "Lokasi ini dipaparkan secara anggaran untuk melindungi privasi individu yang terlibat.",
-  approximateLocation : "Jarak Anggaran"
-},
+    details: {
+      noTime: "Tiada Masa",
+      noLocation: "Tiada Lokasi",
+      incidentWarning: "Sila sentiasa berwaspada semasa melalui kawasan ini.",
+      privacywarning: "Lokasi ini dipaparkan secara anggaran untuk melindungi privasi individu yang terlibat.",
+      approximateLocation: "Jarak Anggaran",
+
+      safetyAdviceTitle: "Nasihat Keselamatan",
+
+      safetyAdvice: {
+        Assault: [
+          "Elakkan kawasan tersebut jika boleh.",
+          "Kekal di kawasan yang terang dan sibuk.",
+          "Laporkan sebarang aktiviti mencurigakan kepada pihak berkuasa."
+        ],
+
+        Robbery: [
+          "Elakkan daripada mempamerkan barang berharga.",
+          "Sentiasa berwaspada dan gunakan laluan yang terang.",
+          "Laporkan aktiviti mencurigakan kepada pihak berkuasa."
+        ],
+
+        Rape: [
+          "Elakkan kawasan tersebut jika boleh.",
+          "Bergerak bersama individu yang dipercayai jika boleh.",
+          "Hubungi pihak berkuasa jika anda berasa tidak selamat."
+        ],
+
+        default: [
+          "Sentiasa berwaspada dengan persekitaran anda.",
+          "Kekal di kawasan yang terang dan sibuk.",
+          "Laporkan aktiviti mencurigakan kepada pihak berkuasa."
+        ]
+      }
+    },
 
 
 
@@ -198,12 +249,63 @@ details: {
       other: "Other"
     },
 
-    details:{
-      noTime : "Time unavailable",
-      noLocation:"Location unavailable",
-      incidentWarning:"Please remain cautious when travelling in this area.",
-      privacywarning : "This location is shown approximately to protect the privacy of individuals involved.",
-      approximateLocation : "Approximate Location"
+    incidentDescriptions: {
+      assaultArea:
+        "A man was seen attacking another person near the roadside. The victim appeared to be injured before the attacker left the area.",
+
+      robberyNearby:
+        "A person reported being approached by a robber who took their belongings before quickly leaving the area.",
+
+      assaultCommercial:
+        "A physical fight was reported near the commercial area. One person was seen being hit several times before others intervened.",
+
+      robberyResidential:
+        "A resident reported that their belongings were stolen near the residential area by an unknown individual.",
+
+      rapeNearby:
+        "A sexual assault was reported near the surrounding area. The incident was reported by the victim after reaching a safer location.",
+
+      personalBelongingStolen:
+        "A person reported that their personal belongings were stolen while they were in the area.",
+
+      rapeReported:
+        "A sexual assault was reported in the area. The victim later informed someone they trusted and reported the incident."
+    },
+
+    details: {
+      noTime: "Time unavailable",
+      noLocation: "Location unavailable",
+      incidentWarning: "Please remain cautious when travelling in this area.",
+      privacywarning: "This location is shown approximately to protect the privacy of individuals involved.",
+      approximateLocation: "Approximate Location",
+
+      safetyAdviceTitle: "Safety Advice",
+
+      safetyAdvice: {
+        Assault: [
+          "Avoid the area if possible.",
+          "Stay in well-lit and busy areas.",
+          "Report any suspicious activity to authorities."
+        ],
+
+        Robbery: [
+          "Avoid displaying valuable belongings.",
+          "Stay alert and use well-lit routes.",
+          "Report suspicious activity to authorities."
+        ],
+
+        Rape: [
+          "Avoid the area if possible.",
+          "Travel with trusted companions when possible.",
+          "Contact the authorities if you feel unsafe."
+        ],
+
+        default: [
+          "Stay alert and remain aware of your surroundings.",
+          "Stay in well-lit and busy areas.",
+          "Report suspicious activity to authorities."
+        ]
+      }
     },
 
     locationPage: {

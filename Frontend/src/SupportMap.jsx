@@ -36,14 +36,27 @@ const incidentIcon = L.divIcon({
 //   }
 // ];
 
-function RecenterMap({ latitude, longitude, recenterTrigger }) {
+function RecenterMap({
+  latitude,
+  longitude,
+  searchedPosition,
+  recenterTrigger
+}) {
   const map = useMap();
 
   useEffect(() => {
-    if (latitude && longitude) {
+    if (searchedPosition) {
+      map.setView(searchedPosition, 15);
+    } else if (latitude && longitude) {
       map.setView([latitude, longitude], 15);
     }
-  }, [latitude, longitude, recenterTrigger, map]);
+  }, [
+    latitude,
+    longitude,
+    searchedPosition,
+    recenterTrigger,
+    map
+  ]);
 
   return null;
 }
@@ -63,6 +76,7 @@ function ResizeMap() {
 export default function SupportMap({ 
   latitude, 
   longitude, 
+  searchedPosition,
   recenterTrigger, 
   incidents,
   language 
@@ -117,6 +131,7 @@ const translateIncidentType = (type) => {
       <RecenterMap
         latitude={latitude}
         longitude={longitude}
+        searchedPosition={searchedPosition}
         recenterTrigger={recenterTrigger}
       />
       

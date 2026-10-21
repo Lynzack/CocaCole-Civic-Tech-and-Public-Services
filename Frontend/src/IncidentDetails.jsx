@@ -1,95 +1,124 @@
-import React from "react";
-import translations from './translations'
+import { useEffect, useState } from "react";
+import translations from "./translations";
+
 import {
   ChevronLeft,
-  MoreHorizontal,
   MapPin,
   Clock,
   Info,
   AlertCircle,
-  ShieldCheck,
   Lightbulb,
 } from "lucide-react";
 
 import "./IncidentDetails.css";
 
 export default function IncidentDetails({
-  incident,
+  incident: selectedIncident,
   onBack,
-  language = "ENG"
+  language = "ENG",
+
+  fetchIncidentDetails,
+  incidentTypeLabel,
+  incidentStatusLabel,
+  formatIncidentTime,
 }) {
-  if (!incident) {
+  const [details, setDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [retry, setRetry] = useState(0);
+
+  const id = selectedIncident?.id;
+
+  const t = translations[language] || translations.ENG;
+  const bm = language === "BM";
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    setDetails(null);
+    setError("");
+
+    if (!id) {
+      setLoading(false);
+      return () => controller.abort();
+    }
+
+    setLoading(true);
+
+    fetchIncidentDetails(id, controller.signal)
+      .then((record) => {
+        if (!controller.signal.aborted) {
+          setDetails(record);
+        }
+      })
+      .catch((failure) => {
+        if (!controller.signal.aborted) {
+          setError(failure.message);
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, [id, retry, fetchIncidentDetails]);
+
+  if (
+    loading ||
+    error ||
+    !details ||
+    details.id !== id
+  ) {
     return (
-      <div className="incident-details-page">
+      <div className="incident-details-page feed-state-page">
         <button
-          className="incident-back-button"
+          type="button"
+          className="feed-button"
           onClick={onBack}
         >
-          <ChevronLeft size={22} />
+          {bm ? "Kembali" : "Back"}
         </button>
 
-        <p className="incident-empty">
-          No incident selected.
+        <p
+          className={`feed-message ${
+            error ? "feed-error" : ""
+          }`}
+          role={error ? "alert" : "status"}
+        >
+          {loading
+            ? bm
+              ? "Memuatkan butiran insiden..."
+              : "Loading incident details..."
+            : bm
+              ? "Butiran insiden tidak tersedia."
+              : "Incident details are unavailable."}
         </p>
+
+        {error && (
+          <button
+            type="button"
+            className="feed-button"
+            onClick={() =>
+              setRetry((value) => value + 1)
+            }
+          >
+            {bm ? "Cuba lagi" : "Try again"}
+          </button>
+        )}
       </div>
     );
   }
-  const t = translations[language] || translations.ENG
-
-
-const translateIncidentType = (type) => {
-        const typeMap = {
-            Assault: 'assault',
-            Robbery: 'robbery',
-            Rape: 'rape',
-            Murder: 'murder',
-            'Sexual Harassment': 'sexualHarassment',
-            Other : "other"
-        }
-
-        const key = typeMap[type]
-
-        return key ? t.incidentTypes[key] : type
-        }
-
-    const translateStatus = (status) => {
-        if (status === 'Verified') return t.common.verified
-        if (status === 'Pending') return t.common.pending
-
-        return status
-    }
-
-    const translateTime = (time) => {
-        if (language === 'ENG') return time
-
-        return time
-            .replace('Today', t.common.today)
-            .replace('Yesterday', t.common.yesterday)
-    }
-
-const incidentType = incident.type
-  ? translateIncidentType(incident.type)
-  : t.dashboard.incidents;
-
-  const incidentTime =
-    translateTime(incident.time) || t.details.noTime;
-
-  const incidentLocation =
-    incident.location || t.details.noLocation;
-
-  const incidentDescription =
-    incident.description ||
-    t.details.incidentWarning;
 
   const isVerified =
-  (incident.status || "").toLowerCase() === "verified";
+    details.verificationStatus === "verified";
 
-  const latitude = Number(incident.latitude);
-  const longitude = Number(incident.longitude);
+  const { latitude, longitude } = details;
 
   const hasCoordinates =
-    Number.isFinite(latitude) &&
-    Number.isFinite(longitude);
+    latitude !== null &&
+    longitude !== null;
 
   const mapUrl = hasCoordinates
     ? `https://www.openstreetmap.org/export/embed.html?bbox=${
@@ -99,89 +128,67 @@ const incidentType = incident.type
       }%2C${latitude + 0.005}&layer=mapnik&marker=${latitude}%2C${longitude}`
     : null;
 
-  const safetyAdvice = {
-    Assault: [
-      "Avoid the area if possible.",
-      "Stay in well-lit and busy areas.",
-      "Report any suspicious activity to authorities.",
-    ],
-
-    Robbery: [
-      "Avoid displaying valuable belongings.",
-      "Stay alert and use well-lit routes.",
-      "Report suspicious activity to authorities.",
-    ],
-
-    Rape: [
-      "Avoid the area if possible.",
-      "Travel with trusted companions when possible.",
-      "Contact the authorities if you feel unsafe.",
-    ],
-  };
-
   const advice =
-    safetyAdvice[incidentType] ||
-    [
-      "Stay alert and remain aware of your surroundings.",
-      "Stay in well-lit and busy areas.",
-      "Report suspicious activity to authorities.",
-    ];
+    t.details.safetyAdvice[details.type] ||
+    t.details.safetyAdvice.default ||
+    [];
+
+  const sources = details.sources.filter(
+    (source) => {
+      try {
+        return ["https:", "http:"].includes(
+          new URL(source.url).protocol
+        );
+      } catch {
+        return false;
+      }
+    }
+  );
 
   return (
     <div className="incident-details-page">
-
-      {/* TOP MAP SECTION */}
       <section className="incident-map-section">
-
         {mapUrl ? (
           <iframe
             className="incident-map-iframe"
-            title="Incident location map"
+            title={
+              bm
+                ? "Anggaran lokasi insiden"
+                : "Approximate incident location"
+            }
             src={mapUrl}
             loading="lazy"
           />
         ) : (
           <div className="incident-map-placeholder">
             <MapPin size={28} />
-            <span>Location unavailable</span>
+            <span>{t.details.noLocation}</span>
           </div>
         )}
 
-        {/* Back button */}
         <button
+          type="button"
           className="incident-map-back"
           onClick={onBack}
-          aria-label="Go back"
+          aria-label={bm ? "Kembali" : "Back"}
         >
           <ChevronLeft size={23} />
         </button>
-
-        {/* More options */}
-        <button
-          className="incident-map-more"
-          aria-label="More options"
-          onClick={() =>
-            alert("More incident options")
-          }
-        >
-          <MoreHorizontal size={22} />
-        </button>
-
       </section>
 
-
-      {/* INCIDENT INFORMATION */}
       <main className="incident-details-content">
-
-        {/* Incident heading */}
         <div className="incident-title-row">
-
           <div className="incident-alert-icon">
-            <AlertCircle size={23} strokeWidth={2.5} />
+            <AlertCircle
+              size={23}
+              strokeWidth={2.5}
+            />
           </div>
 
           <div className="incident-title-text">
-            <h1>{t.incidentTypes[incidentType] || incidentType}</h1>
+            <h1>
+              {incidentTypeLabel(details, t)}
+            </h1>
           </div>
 
           <span
@@ -191,72 +198,93 @@ const incidentType = incident.type
                 : "status-pending"
             }`}
           >
-            {translateStatus(incident.status)}
+            {incidentStatusLabel(
+              details,
+              t,
+              language
+            )}
           </span>
-
         </div>
 
-
-        {/* Date and time */}
         <div className="incident-metadata">
-
           <div className="incident-meta-row">
             <Clock size={14} />
 
-            <span>{incidentTime}</span>
+            <span>
+              {formatIncidentTime(details, language)}
+            </span>
           </div>
 
-          {/* Location */}
           <div className="incident-meta-row">
             <MapPin size={15} />
 
             <div className="incident-location-text">
-              <span>{incidentLocation}</span>
+              <span>
+                {details.location ||
+                  t.details.noLocation}
+              </span>
+
               <span className="incident-approximate">
                 ({t.details.approximateLocation})
               </span>
             </div>
           </div>
-
         </div>
 
-
-        {/* Description */}
-        <div className = "incident-description-details">
+        <div className="incident-description-details">
           <Info size={17} />
 
-          <p>{incidentDescription}  
-          </p>
-        </div>
-        
-  
-
-
-        {/* Privacy warning */}
-        <div className="incident-privacy-warning">
-
-          <AlertCircle size={17} />
-
           <p>
-            {t.details.privacywarning}
+            {details.description ||
+              (bm
+                ? "Keterangan tidak tersedia."
+                : "Description unavailable.")}
           </p>
-
         </div>
 
+        <div className="incident-privacy-warning">
+          <AlertCircle size={17} />
+          <p>{t.details.privacywarning}</p>
+        </div>
 
-        {/* Safety advice */}
+        {isVerified && sources.length > 0 && (
+          <section className="feed-sources">
+            <h2>
+              {bm
+                ? "Sumber pengesahan"
+                : "Verification sources"}
+            </h2>
+
+            <ul>
+              {sources.map((source, index) => (
+                <li key={`${source.url}-${index}`}>
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {source.title ||
+                      (bm
+                        ? `Sumber ${index + 1}`
+                        : `Source ${index + 1}`)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="incident-safety-section">
-
           <div className="incident-safety-heading">
-
             <Lightbulb
               size={19}
               fill="#f59e0b"
               color="#f59e0b"
             />
 
-            <h2>Safety Advice</h2>
-
+            <h2>
+              {t.details.safetyAdviceTitle}
+            </h2>
           </div>
 
           <ul className="incident-safety-list">
@@ -264,11 +292,8 @@ const incidentType = incident.type
               <li key={index}>{item}</li>
             ))}
           </ul>
-
         </section>
-
       </main>
-
     </div>
   );
 }

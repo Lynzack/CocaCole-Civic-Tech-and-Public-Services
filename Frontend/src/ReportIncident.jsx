@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import translations from "./translations";
 
 import {
@@ -51,7 +51,7 @@ function MapUpdater({ position }) {
   return null;
 }
 
-function LocationPicker({ position, setPosition }) {
+function LocationPicker({ position, setPosition, radius }) {
   useMapEvents({
     click(event) {
       setPosition([
@@ -67,7 +67,7 @@ function LocationPicker({ position, setPosition }) {
 
       <Circle
         center={position}
-        radius={position.radius || 250}
+        radius={radius}
         pathOptions={{
           color: "#2563eb",
           fillColor: "#3b82f6",
@@ -94,6 +94,28 @@ export default function ReportIncident({ language = "ENG" }) {
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittingRef = useRef(false);
+  const isBM = language === "BM";
+  const apiBase = (
+    import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5001"
+  ).replace(/\/+$/, "");
+  const locationName = locationDetails.trim() || locationLabel.trim();
+
+  function validateLocation() {
+    if (!locationLabel.trim()) {
+      setError(t.report.errors.selectLocation);
+      return false;
+    }
+    // Map clicks supply coordinates; the backend also needs an area name.
+    if (!locationDetails.trim() && /^-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?$/.test(locationLabel.trim())) {
+      setError(isBM
+        ? "Sila masukkan nama kawasan atau jalan dalam Butiran Lokasi."
+        : "Please enter an area or street name in Location Details.");
+      return false;
+    }
+    return true;
+  }
 
   function nextStep() {
     setError("");
@@ -103,10 +125,7 @@ export default function ReportIncident({ language = "ENG" }) {
       return;
     }
 
-    if (step === 2 && !locationLabel.trim()) {
-      setError(t.report.errors.selectLocation);
-      return;
-    }
+    if (step === 2 && !validateLocation()) return;
 
     setStep((current) => Math.min(current + 1, 3));
   }
@@ -171,27 +190,23 @@ export default function ReportIncident({ language = "ENG" }) {
   }
 
   function handlePhotoChange(event) {
-    const selectedFiles = Array.from(
-      event.target.files || []
-    );
-
-    const validFiles = selectedFiles.filter(
-      (file) =>
-        file.type.startsWith("image/") &&
-        file.size <= 5 * 1024 * 1024
-    );
-
-    if (validFiles.length !== selectedFiles.length) {
-      setError(t.report.errors.photoSize);
-    } else {
-      setError("");
-    }
-
-    setPhotos((current) =>
-      [...current, ...validFiles].slice(0, 5)
-    );
-
+    const files = Array.from(event.target.files || []);
     event.target.value = "";
+    if (!files.length) return;
+
+    if (files.length !== 1 || photos.length > 0) {
+      setError(isBM ? "Hanya satu foto dibenarkan." : "Only one photo is supported.");
+      return;
+    }
+    const file = files[0];
+    if (!/\.(png|jpe?g)$/i.test(file.name) || !file.size || file.size > 5 * 1024 * 1024) {
+      setError(isBM
+        ? "Pilih foto PNG atau JPEG yang tidak kosong, maksimum 5 MB."
+        : "Choose a non-empty PNG or JPEG photo, up to 5 MB.");
+      return;
+    }
+    setPhotos([file]);
+    setError("");
   }
 
   function removePhoto(index) {
@@ -200,44 +215,62 @@ export default function ReportIncident({ language = "ENG" }) {
     );
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-
+    if (submittingRef.current || step !== 3) return;
     setError("");
 
-    if (!incidentDate || !incidentTime || !description.trim()) {
-      setError(
-        t.report.errors.requiredDetails
-      );
-
+    if (!incidentType) {
+      setError(t.report.errors.selectIncident);
       return;
     }
-    if (photos.length === 0) {
+    if (!validateLocation()) return;
+    if (!incidentDate || !incidentTime || !description.trim()) {
+      setError(t.report.errors.requiredDetails);
+      return;
+    }
+    if (photos.length !== 1) {
       setError("photoRequired");
       return;
     }
 
-    const report = {
-      incidentType,
+    const formData = new FormData();
+    formData.append("incident_type", incidentType === "sexualHarassment"
+      ? "sexual harassment" : incidentType);
+    formData.append("latitude", String(position[0]));
+    formData.append("longitude", String(position[1]));
+    formData.append("location_name", locationName);
+    formData.append("radius", String(radius));
+    // Preserve the date and time entered by the user; do not convert to UTC.
+    formData.append("incident_datetime", `${incidentDate}T${incidentTime}`);
+    formData.append("description", description.trim());
+    formData.append("photo", photos[0]);
 
-      location: {
-        label: locationLabel,
-        details: locationDetails,
-        latitude: position[0],
-        longitude: position[1],
-        radiusMeters: radius,
-      },
-
-      incidentDate,
-      incidentTime,
-      description,
-
-      photos: photos.map((photo) => photo.name),
-    };
-
-    console.log("Incident report:", report);
-
-    setSubmitted(true);
+    submittingRef.current = true;
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${apiBase}/api/reports`, {
+        method: "POST",
+        body: formData,
+      });
+      // The browser sets the multipart boundary automatically.
+      const data = await response.json().catch(() => null);
+      if (response.status !== 201 || data?.success !== true) {
+        throw new Error(data?.message || (isBM
+          ? "Penghantaran tidak dapat disahkan. Semak laporan anda sebelum menghantar semula."
+          : "Submission could not be confirmed. Check your reports before submitting again."));
+      }
+      setSubmitted(true);
+    } catch (error) {
+      setError(error instanceof TypeError
+        ? (isBM
+          ? "Sambungan terputus. Semak laporan anda sebelum menghantar semula untuk mengelakkan pendua."
+          : "The connection failed. Check your reports before submitting again to avoid duplicates.")
+        : error.message);
+    } finally {
+      submittingRef.current = false;
+      setIsSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -253,7 +286,9 @@ export default function ReportIncident({ language = "ENG" }) {
           <h2>{t.report.successTitle}</h2>
 
           <p>
-            {t.report.successMessage}
+            {isBM
+              ? "Laporan anda telah disimpan dan sedang menunggu semakan."
+              : "Your report has been saved and is awaiting review."}
           </p>
 
           <button
@@ -335,7 +370,8 @@ export default function ReportIncident({ language = "ENG" }) {
 
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-busy={isSubmitting}>
+          <fieldset disabled={isSubmitting} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
 
           {step === 1 && (
             <section className="report-card">
@@ -490,6 +526,7 @@ export default function ReportIncident({ language = "ENG" }) {
                   <LocationPicker
                     position={position}
                     setPosition={handleMapClick}
+                    radius={radius}
                   />
 
                 </MapContainer>
@@ -701,25 +738,24 @@ export default function ReportIncident({ language = "ENG" }) {
                     </strong>
 
                     <span>
-                      {t.report.photoFormats}
+                      {isBM ? "PNG atau JPEG · Maksimum 5 MB" : "PNG or JPEG · Maximum 5 MB"}
                     </span>
 
                     <span>
-                      {t.report.photoLimit}
+                      {isBM ? "Satu foto" : "One photo"}
                     </span>
 
-                    <label className="custom-file-upload">
+                    <span className="custom-file-upload">
 
                       <input
                         className="hidden-file-input"
                         type="file"
-                        accept="image/*"
-                        multiple
+                        accept="image/png,image/jpeg,.png,.jpg,.jpeg"
                         onChange={handlePhotoChange}
-                        disabled={photos.length >= 5}
+                        disabled={photos.length >= 1 || isSubmitting}
                       />
 
-                    </label>
+                    </span>
 
                 </label>
 
@@ -777,7 +813,7 @@ export default function ReportIncident({ language = "ENG" }) {
                     {t.common.location}:
                   </strong>{" "}
 
-                  {locationLabel}
+                  {locationName}
                 </p>
 
                 <p>
@@ -852,7 +888,9 @@ export default function ReportIncident({ language = "ENG" }) {
 
                 <Check size={19} />
 
-                {t.report.submit}
+                {isSubmitting
+                  ? (isBM ? "Menghantar..." : "Submitting...")
+                  : t.report.submit}
 
               </button>
 
@@ -860,6 +898,7 @@ export default function ReportIncident({ language = "ENG" }) {
 
           </div>
 
+          </fieldset>
         </form>
 
         <p className="report-footer">

@@ -166,6 +166,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 
   padding: 10px 12px 14px;
 
@@ -263,4 +264,55 @@
     transform: translateY(-4px);
     opacity: 1;
   }
+}
+
+/* Left-align message text and prevent long words overflowing. */
+.ai-chat-page .chat-bubble {
+  min-width: 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+/* Markdown handles paragraph spacing for AI replies. */
+.ai-chat-page .ai-bubble {
+  white-space: normal;
+}
+
+.ai-bubble p {
+  margin: 0 0 10px;
+}
+
+.ai-bubble > :last-child {
+  margin-bottom: 0;
+}
+
+.ai-bubble ul,
+.ai-bubble ol {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+
+.ai-bubble li {
+  margin-bottom: 8px;
+}
+
+.ai-bubble li p {
+  margin-bottom: 6px;
+}
+
+.ai-bubble strong {
+  font-weight: 700;
+}
+
+/* Preserve line breaks in the user's own messages. */
+.chat-user-text {
+  white-space: pre-wrap;
+}
+
+/* Show when controls are unavailable. */
+.ai-send-button:disabled,
+.ai-attachment-button:disabled,
+.ai-quick-replies button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
